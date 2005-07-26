@@ -1,0 +1,19 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.apache.maven.plugin.rmic.RmiCompilerManager</role>
+      <implementation>org.apache.maven.plugin.rmic.DefaultRmiCompilerManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.plugin.rmic.RmiCompiler</role>
+          <field-name>rmiCompilers</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.plugin.rmic.RmiCompiler</role>
+      <role-hint>sun</role-hint>
+      <implementation>org.apache.maven.plugin.rmic.SunRmiCompiler</implementation>
+    </component>
+  </components>
+</component-set>
