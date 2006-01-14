@@ -5,7 +5,7 @@
     <groupId>org.apache.maven.plugins</groupId>
     <version>2.0-alpha-1</version>
   </parent>
-  <artifactId>maven-rmic-plugin</artifactId>
+  <artifactId>rmic-maven-plugin</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Maven RMI Compiler Plugin</name>
