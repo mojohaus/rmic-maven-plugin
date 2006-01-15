@@ -1,9 +1,9 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>maven-plugin-parent</artifactId>
-    <groupId>org.apache.maven.plugins</groupId>
-    <version>2.0-alpha-1</version>
+    <artifactId>mojo-sandbox</artifactId>
+    <groupId>org.codehaus.mojo</groupId>
+    <version>1</version>
   </parent>
   <artifactId>rmic-maven-plugin</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
