@@ -15,7 +15,7 @@ import org.apache.maven.plugin.AbstractMojo;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class AbstractRmiMojo
+public abstract class AbstractRmiMojo
     extends AbstractMojo
 {
     // ----------------------------------------------------------------------

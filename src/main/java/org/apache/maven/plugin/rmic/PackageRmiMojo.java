@@ -7,12 +7,10 @@ package org.apache.maven.plugin.rmic;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.jar.JarFile;
 
-import org.apache.maven.archiver.MavenArchiver;
-import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -22,9 +20,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
  *
  * @phase package
  *
- * @requiresDependencyResolution
- *
- * @description Packages the RMI stubs and client classes.
+ * @description Packages the RMI stub and client classes.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -39,15 +35,21 @@ public class PackageRmiMojo
     private File target;
 
     /**
-     * @parameter expression="${project.build.finalname}"
+     * @parameter expression="${project.build.finalName}"
      * @required
      */
     private String finalName;
 
     /**
      * @parameter expression="${project}"
+     * @required
      */
     private MavenProject project;
+
+    /**
+     * @component
+     */
+    private MavenProjectHelper projectHelper;
 
     // ----------------------------------------------------------------------
     //
@@ -56,13 +58,15 @@ public class PackageRmiMojo
     public void execute()
         throws MojoExecutionException
     {
-        File clientJar = new File( target, finalName + "-client.jar" );
+        String classifier = "client";
+
+        File stubJar = new File( target, finalName + "-" + classifier + ".jar" );
 
         try
         {
             JarArchiver jarArchiver = new JarArchiver();
 
-            jarArchiver.setDestFile( clientJar );
+            jarArchiver.setDestFile( stubJar );
 
             // ----------------------------------------------------------------------
             // Add the *_Stub classes
@@ -78,10 +82,20 @@ public class PackageRmiMojo
 
                 jarArchiver.addDirectory( getOutputClasses(), includes, new String[ 0 ] );
             }
+
+            getLog().info( "Building RMI stub jar: " + stubJar.getAbsolutePath() );
+
+            jarArchiver.createArchive();
+
+            projectHelper.attachArtifact( project, "jar", classifier, stubJar );
         }
         catch ( ArchiverException e )
         {
-            throw new MojoExecutionException( "Could not create the client jar", e );
+            throw new MojoExecutionException( "Could not create the RMI stub jar", e );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Could not create the RMI stub jar", e );
         }
     }
 }

@@ -60,9 +60,7 @@ public class ProcessClassesRmiMojo
     // ----------------------------------------------------------------------
 
     /**
-     * @parameter expression="${component.org.apache.maven.plugin.rmic.RmiCompilerManager}"
-     * @required
-     * @readonly
+     * @component org.apache.maven.plugin.rmic.RmiCompilerManager
      */
     private RmiCompilerManager rmiCompilerManager;
 

@@ -23,13 +23,13 @@ package org.apache.maven.plugin.rmic;
  */
 
 import java.io.File;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
-import java.net.URLClassLoader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
 
@@ -50,42 +50,52 @@ public class SunRmiCompiler
     public void execute( File[] path, List remoteClasses, File outputClasses )
         throws RmiCompilerException
     {
-        String[] classes = {
-            "sun.rmi.rmic.newrmic.Main",
-            "sun.rmi.rmic.Main",
-        };
+        // ----------------------------------------------------------------------
+        // Construct the RMI Compiler's class path.
+        // ----------------------------------------------------------------------
 
-        List elements = new ArrayList();
-
-        elements.addAll( Arrays.asList( path ) );
+        IsolatedClassLoader classLoader = new IsolatedClassLoader();
 
         File toolsJar = new File( System.getProperty( "java.home" ), "../lib/tools.jar" );
 
         if ( toolsJar.isFile() )
         {
-            elements.add( toolsJar );
+            try
+            {
+                classLoader.addURL( toolsJar.toURL() );
+            }
+            catch ( MalformedURLException e )
+            {
+                throw new RmiCompilerException(
+                    "Error while converting '" + toolsJar.getAbsolutePath() + "' to a URL." );
+            }
         }
-
-        URL[] classpath = new URL[ elements.size() ];
-
-        for ( int i = 0; i < elements.size(); i++ )
+        else
         {
-            classpath[ i ] = fileToURL( (File) elements.get( i ) );
+            getLogger().warn( "tools.jar doesn't exist: " + toolsJar.getAbsolutePath() );
         }
-
-        ClassLoader classLoader = new URLClassLoader( classpath, ClassLoader.getSystemClassLoader() );
 
         Class clazz = null;
 
+        // ----------------------------------------------------------------------
+        // Try to load the rmic class
+        // ----------------------------------------------------------------------
+
+        String[] classes = {"sun.rmi.rmic.Main",};
+
         for ( int i = 0; i < classes.length; i++ )
         {
-            String className = classes[ i ];
+            String className = classes[i];
 
-            clazz = findClass( classLoader, className );
-
-            if ( clazz != null )
+            try
             {
+                clazz = classLoader.loadClass( className );
+
                 break;
+            }
+            catch ( ClassNotFoundException e )
+            {
+                // continue
             }
         }
 
@@ -95,16 +105,16 @@ public class SunRmiCompiler
 
             for ( int i = 0; i < classes.length; i++ )
             {
-                String className = classes[ i ];
+                String className = classes[i];
 
                 getLogger().info( " * " + className );
             }
 
-            getLogger().info( "With this classpath:" );
+            getLogger().info( "Within this classpath:" );
 
-            for ( int it = 0; it < classpath.length; it++ )
+            for ( int it = 0; it < classLoader.getURLs().length; it++ )
             {
-                URL url = classpath[ it ];
+                URL url = classLoader.getURLs()[it];
 
                 getLogger().info( " * " + url.toExternalForm() );
             }
@@ -112,20 +122,27 @@ public class SunRmiCompiler
             throw new RmiCompilerException( "Could not find any of the classes required for executing rmic." );
         }
 
-        String c = "";
-
-        for ( int i = 0; i < path.length; i++ )
-        {
-            File file = path[ i ];
-
-            c += file.getAbsolutePath() + ":";
-        }
+        // ----------------------------------------------------------------------
+        // Build the argument list
+        // ----------------------------------------------------------------------
 
         List arguments = new ArrayList();
 
-        arguments.add( "-classpath" );
+        if ( path.length > 0 )
+        {
+            String c = "";
 
-        arguments.add( c );
+            for ( int i = 0; i < path.length; i++ )
+            {
+                File file = path[i];
+
+                c += file.getAbsolutePath() + ":";
+            }
+
+            arguments.add( "-classpath" );
+
+            arguments.add( c );
+        }
 
         arguments.add( "-d" );
 
@@ -145,14 +162,21 @@ public class SunRmiCompiler
 
         String[] args = (String[]) arguments.toArray( new String[ arguments.size() ] );
 
-        getLogger().info( "rmic arguments: " );
-
-        for ( int i = 0; i < args.length; i++ )
+        if ( getLogger().isInfoEnabled() )
         {
-            String arg = args[ i ];
+            getLogger().info( "rmic arguments: " );
 
-            getLogger().info( arg );
+            for ( int i = 0; i < args.length; i++ )
+            {
+                String arg = args[i];
+
+                getLogger().info( arg );
+            }
         }
+
+        // ----------------------------------------------------------------------
+        // Execute it
+        // ----------------------------------------------------------------------
 
         executeMain( clazz, args );
     }
@@ -164,21 +188,38 @@ public class SunRmiCompiler
     private void executeMain( Class clazz, String[] args )
         throws RmiCompilerException
     {
-        Method method;
+        Method compile;
+
+        Object main;
 
         try
         {
-            method = clazz.getMethod( "main", new Class[] { String[].class } );
+            Constructor constructor = clazz.getConstructor( new Class[]{OutputStream.class, String.class} );
+
+            main = constructor.newInstance( new Object[]{System.out, "rmic"} );
+
+            compile = clazz.getMethod( "compile", new Class[]{String[].class} );
         }
         catch ( NoSuchMethodException e )
         {
-            throw new RmiCompilerException( "Internal error, could not find the main() " +
-                                            "in the class " + clazz.getName() + "." );
+            throw new RmiCompilerException( "Error while initializing rmic.", e );
+        }
+        catch ( IllegalAccessException e )
+        {
+            throw new RmiCompilerException( "Error while initializing rmic.", e );
+        }
+        catch ( InvocationTargetException e )
+        {
+            throw new RmiCompilerException( "Error while initializing rmic.", e );
+        }
+        catch ( InstantiationException e )
+        {
+            throw new RmiCompilerException( "Error while initializing rmic.", e );
         }
 
         try
         {
-            method.invoke( null, new Object[] { args } );
+            compile.invoke( main, new Object[]{args} );
         }
         catch ( IllegalAccessException e )
         {
@@ -199,20 +240,7 @@ public class SunRmiCompiler
         }
         catch ( MalformedURLException e )
         {
-            throw new RmiCompilerException( "Could not make a URL out of the class path element " +
-                                            "'" + file.toString() + "'." );
-        }
-    }
-
-    private Class findClass( ClassLoader classLoader, String className )
-    {
-        try
-        {
-            return classLoader.loadClass( className );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            return null;
+            throw new RmiCompilerException( "Could not make a URL out of the class path element " + "'" + file.toString() + "'." );
         }
     }
 }
