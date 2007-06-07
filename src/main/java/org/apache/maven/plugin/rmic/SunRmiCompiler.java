@@ -131,12 +131,12 @@ public class SunRmiCompiler
         if ( path.length > 0 )
         {
             String c = "";
-
+	    
             for ( int i = 0; i < path.length; i++ )
             {
                 File file = path[i];
 
-                c += file.getAbsolutePath() + ":";
+                c += file.getAbsolutePath() + File.pathSeparator;
             }
 
             arguments.add( "-classpath" );
