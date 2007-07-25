@@ -35,6 +35,11 @@ under the License.
   <packaging>maven-plugin</packaging>
   <name>Maven RMI Compiler Plugin</name>
 
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MRMIC</url>
+  </issueManagement>
+
   <licenses>
     <license>
       <name>The MIT License</name>
