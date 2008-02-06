@@ -38,7 +38,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @description Enhances the application data objects.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ProcessClassesRmiMojo.java 1755 2006-03-29 20:32:53Z trygvis $
+ * @version $Id$
  */
 public class ProcessClassesRmiMojo
     extends AbstractRmiMojo

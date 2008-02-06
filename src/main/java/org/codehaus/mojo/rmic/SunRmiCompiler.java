@@ -37,7 +37,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: SunRmiCompiler.java 4315 2007-06-07 22:54:03Z kismet $
+ * @version $Id$
  */
 public class SunRmiCompiler
     extends AbstractLogEnabled

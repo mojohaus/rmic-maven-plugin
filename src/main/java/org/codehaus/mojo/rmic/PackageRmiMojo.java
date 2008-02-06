@@ -40,7 +40,7 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
  * @description Packages the RMI stub and client classes.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: PackageRmiMojo.java 4528 2007-07-12 14:18:26Z kismet $
+ * @version $Id$
  */
 public class PackageRmiMojo
     extends AbstractRmiMojo

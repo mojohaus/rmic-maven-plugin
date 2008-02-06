@@ -25,7 +25,7 @@ package org.codehaus.mojo.rmic;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: RmiCompilerManager.java 4528 2007-07-12 14:18:26Z kismet $
+ * @version $Id$
  */
 public interface RmiCompilerManager
 {

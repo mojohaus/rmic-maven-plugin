@@ -24,7 +24,7 @@ package org.codehaus.mojo.rmic;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: RmiCompilerException.java 337 2005-07-26 21:33:58Z trygvis $
+ * @version $Id$
  */
 public class RmiCompilerException
     extends Exception

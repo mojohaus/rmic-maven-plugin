@@ -26,7 +26,7 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: RmiCompiler.java 337 2005-07-26 21:33:58Z trygvis $
+ * @version $Id$
  */
 public interface RmiCompiler
 {
