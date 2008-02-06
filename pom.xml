@@ -25,9 +25,9 @@ under the License.
   
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>mojo-sandbox</artifactId>
+    <artifactId>mojo</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>3</version>
+    <version>16</version>
   </parent>	
 
   <artifactId>rmic-maven-plugin</artifactId>
