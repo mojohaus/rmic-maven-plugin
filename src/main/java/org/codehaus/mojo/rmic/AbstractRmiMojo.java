@@ -23,8 +23,8 @@ package org.codehaus.mojo.rmic;
  */
 
 import java.io.File;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -78,6 +78,22 @@ public abstract class AbstractRmiMojo
      */
     private List compileClasspath;
 
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean iiop;
+    
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean idl;
+     
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean keep;
+    
+    
     public String getRemoteClasses()
     {
         return remoteClasses;
@@ -103,7 +119,7 @@ public abstract class AbstractRmiMojo
         return compileClasspath;
     }
 
-    protected List getSourceClasses()
+    public List getSourceClasses()
     {
         List sourceClasses = new ArrayList();
 
@@ -119,5 +135,20 @@ public abstract class AbstractRmiMojo
         }
 
         return sourceClasses;
+    }
+
+    public boolean isIiop()
+    {
+        return iiop;
+    }
+
+    public boolean isIdl()
+    {
+        return idl;
+    }
+
+    public boolean isKeep()
+    {
+        return keep;
     }
 }

@@ -29,9 +29,8 @@ import java.util.Iterator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-
-import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.jar.JarArchiver;
 
 /**
  * @goal package

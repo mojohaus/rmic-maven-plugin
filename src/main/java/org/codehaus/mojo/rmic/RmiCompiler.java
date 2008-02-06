@@ -22,9 +22,7 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.util.List;
 import java.io.File;
-import java.net.URL;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -34,6 +32,6 @@ public interface RmiCompiler
 {
     String ROLE = RmiCompiler.class.getName();
 
-    void execute( File[] classLoader, List remoteClasses, File outputClasses )
+    void execute( File[] classLoader, RmiConfig rmiConfig )
         throws RmiCompilerException;
 }

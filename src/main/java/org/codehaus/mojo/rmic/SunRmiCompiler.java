@@ -24,14 +24,14 @@ package org.codehaus.mojo.rmic;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
@@ -47,7 +47,7 @@ public class SunRmiCompiler
     // RmiCompiler Implementation
     // ----------------------------------------------------------------------
 
-    public void execute( File[] path, List remoteClasses, File outputClasses )
+    public void execute( File[] path, RmiConfig rmiConfig )
         throws RmiCompilerException
     {
         // ----------------------------------------------------------------------
@@ -66,8 +66,7 @@ public class SunRmiCompiler
             }
             catch ( MalformedURLException e )
             {
-                throw new RmiCompilerException(
-                    "Error while converting '" + toolsJar.getAbsolutePath() + "' to a URL." );
+                throw new RmiCompilerException( "Error while converting '" + toolsJar.getAbsolutePath() + "' to a URL." );
             }
         }
         else
@@ -81,7 +80,7 @@ public class SunRmiCompiler
         // Try to load the rmic class
         // ----------------------------------------------------------------------
 
-        String[] classes = {"sun.rmi.rmic.Main",};
+        String[] classes = { "sun.rmi.rmic.Main", };
 
         for ( int i = 0; i < classes.length; i++ )
         {
@@ -131,7 +130,7 @@ public class SunRmiCompiler
         if ( path.length > 0 )
         {
             String c = "";
-	    
+
             for ( int i = 0; i < path.length; i++ )
             {
                 File file = path[i];
@@ -146,21 +145,36 @@ public class SunRmiCompiler
 
         arguments.add( "-d" );
 
-        arguments.add( outputClasses.getAbsolutePath() );
-
+        arguments.add( rmiConfig.getOutputClasses().getAbsolutePath() );
+                
+        if ( rmiConfig.isIiop() )
+        {
+            arguments.add( "-iiop" );
+        }
+        
+        if ( rmiConfig.isIdl() )
+        {
+            arguments.add( "-idl" );
+        }
+         
+        if ( rmiConfig.isKeep() )
+        {
+            arguments.add( "-keep" );
+        }
+        
         if ( getLogger().isDebugEnabled() )
         {
             arguments.add( "-verbose" );
         }
 
-        for ( Iterator it = remoteClasses.iterator(); it.hasNext(); )
+        for ( Iterator it = rmiConfig.getSourceClasses().iterator(); it.hasNext(); )
         {
             String remoteClass = (String) it.next();
 
             arguments.add( remoteClass );
         }
 
-        String[] args = (String[]) arguments.toArray( new String[ arguments.size() ] );
+        String[] args = (String[]) arguments.toArray( new String[arguments.size()] );
 
         if ( getLogger().isInfoEnabled() )
         {
@@ -194,11 +208,11 @@ public class SunRmiCompiler
 
         try
         {
-            Constructor constructor = clazz.getConstructor( new Class[]{OutputStream.class, String.class} );
+            Constructor constructor = clazz.getConstructor( new Class[] { OutputStream.class, String.class } );
 
-            main = constructor.newInstance( new Object[]{System.out, "rmic"} );
+            main = constructor.newInstance( new Object[] { System.out, "rmic" } );
 
-            compile = clazz.getMethod( "compile", new Class[]{String[].class} );
+            compile = clazz.getMethod( "compile", new Class[] { String[].class } );
         }
         catch ( NoSuchMethodException e )
         {
@@ -219,7 +233,7 @@ public class SunRmiCompiler
 
         try
         {
-            compile.invoke( main, new Object[]{args} );
+            compile.invoke( main, new Object[] { args } );
         }
         catch ( IllegalAccessException e )
         {
@@ -240,7 +254,8 @@ public class SunRmiCompiler
         }
         catch ( MalformedURLException e )
         {
-            throw new RmiCompilerException( "Could not make a URL out of the class path element " + "'" + file.toString() + "'." );
+            throw new RmiCompilerException( "Could not make a URL out of the class path element " + "'" +
+                file.toString() + "'." );
         }
     }
 }

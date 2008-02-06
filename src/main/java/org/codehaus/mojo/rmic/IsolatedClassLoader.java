@@ -22,8 +22,8 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.net.URLClassLoader;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 public class IsolatedClassLoader
     extends URLClassLoader

@@ -23,10 +23,8 @@ package org.codehaus.mojo.rmic;
  */
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -44,6 +42,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 public class ProcessClassesRmiMojo
     extends AbstractRmiMojo
+    implements RmiConfig
 {
     // ----------------------------------------------------------------------
     // Configurable parameters
@@ -104,7 +103,7 @@ public class ProcessClassesRmiMojo
 
             List sourceClasses = getSourceClasses();
 
-            rmiCompiler.execute( compileClasspath, sourceClasses, getOutputClasses() );
+            rmiCompiler.execute( compileClasspath, this );
         }
         catch ( RmiCompilerException e )
         {
