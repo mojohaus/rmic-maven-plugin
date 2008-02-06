@@ -145,7 +145,7 @@ public class SunRmiCompiler
 
         arguments.add( "-d" );
 
-        arguments.add( rmiConfig.getOutputClasses().getAbsolutePath() );
+        arguments.add( rmiConfig.getOutputDirectory().getAbsolutePath() );
                 
         if ( rmiConfig.isIiop() )
         {

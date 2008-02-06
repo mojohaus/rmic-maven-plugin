@@ -55,11 +55,17 @@ public abstract class AbstractRmiMojo
     private String compilerId;
 
     /**
-     * @parameter expression="${project.build.directory}/rmi-stub-classes"
-     * @required
+     * @parameter
+     * @deprecated Use outputDirectory instead
      */
     private File outputClasses;
 
+    /**
+     * Specifies where to place rmic generated class files.
+     * @parameter default-value="${project.build.directory}/rmi-classes"
+     */
+    private File outputDirectory;
+    
     // ----------------------------------------------------------------------
     // Constant parameters
     // ----------------------------------------------------------------------
@@ -93,7 +99,10 @@ public abstract class AbstractRmiMojo
      */
     private boolean keep;
     
-    
+    // ----------------------------------------------------------------------
+    // Methods
+    // ----------------------------------------------------------------------
+
     public String getRemoteClasses()
     {
         return remoteClasses;
@@ -104,9 +113,17 @@ public abstract class AbstractRmiMojo
         return compilerId;
     }
 
-    public File getOutputClasses()
+    /**
+     * Get the directory where rmic generated class files are written.
+     * @return the directory
+     */
+    public File getOutputDirectory()
     {
-        return outputClasses;
+        if ( outputClasses != null )
+        {
+            return outputClasses;
+        }
+        return outputDirectory;
     }
 
     public File getClasses()

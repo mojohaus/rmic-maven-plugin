@@ -97,7 +97,7 @@ public class PackageRmiMojo
                     clazz.replace( '.', '/' ) + "_Stub.class",
                 };
 
-                jarArchiver.addDirectory( getOutputClasses(), includes, new String[ 0 ] );
+                jarArchiver.addDirectory( getOutputDirectory(), includes, new String[ 0 ] );
             }
 
             getLog().info( "Building RMI stub jar: " + stubJar.getAbsolutePath() );

@@ -77,12 +77,12 @@ public class ProcessClassesRmiMojo
             throw new MojoExecutionException( "No such RMI compiler installed '" + compilerId + "'." );
         }
 
-        if ( !getOutputClasses().isDirectory() )
+        if ( !getOutputDirectory().isDirectory() )
         {
-            if ( !getOutputClasses().mkdirs() )
+            if ( !getOutputDirectory().mkdirs() )
             {
                 throw new MojoExecutionException( "Could not make output directory: " +
-                                                  "'" + getOutputClasses().getAbsolutePath() + "'." );
+                                                  "'" + getOutputDirectory().getAbsolutePath() + "'." );
             }
         }
 

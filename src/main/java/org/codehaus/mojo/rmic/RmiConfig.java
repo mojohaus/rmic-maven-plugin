@@ -28,7 +28,7 @@ import java.util.List;
 public interface RmiConfig
 {
 
-    public File getOutputClasses();
+    public File getOutputDirectory();
     
     public List getSourceClasses();
 
