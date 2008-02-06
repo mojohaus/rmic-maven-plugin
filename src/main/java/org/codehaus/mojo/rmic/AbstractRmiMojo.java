@@ -66,6 +66,21 @@ public abstract class AbstractRmiMojo
      */
     private File outputDirectory;
     
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean iiop;
+    
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean idl;
+     
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean keep;
+    
     // ----------------------------------------------------------------------
     // Constant parameters
     // ----------------------------------------------------------------------
@@ -84,21 +99,6 @@ public abstract class AbstractRmiMojo
      */
     private List compileClasspath;
 
-    /**
-     * @parameter default-value="false"
-     */
-    private boolean iiop;
-    
-    /**
-     * @parameter default-value="false"
-     */
-    private boolean idl;
-     
-    /**
-     * @parameter default-value="false"
-     */
-    private boolean keep;
-    
     // ----------------------------------------------------------------------
     // Methods
     // ----------------------------------------------------------------------
