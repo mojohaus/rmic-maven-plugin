@@ -32,11 +32,10 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 
 /**
+ * Creates a jar containing the rmic generated classes.
+ * 
  * @goal package
- *
  * @phase package
- *
- * @description Packages the RMI stub and client classes.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -58,9 +57,16 @@ public class PackageRmiMojo
 
     /**
      * @parameter expression="${project}"
-     * @required
+     * @readonly
      */
     private MavenProject project;
+
+    /**
+     * Classifier to append to the jar.
+     * 
+     * @parameter default-value="client"
+     */
+    private String classifier;
 
     /**
      * @component
@@ -74,8 +80,6 @@ public class PackageRmiMojo
     public void execute()
         throws MojoExecutionException
     {
-        String classifier = "client";
-
         File stubJar = new File( target, finalName + "-" + classifier + ".jar" );
 
         try

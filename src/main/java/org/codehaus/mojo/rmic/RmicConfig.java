@@ -25,6 +25,13 @@ package org.codehaus.mojo.rmic;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Interface containing required methods for retrieving information
+ * necessary for rmi compilation to take place.
+ * 
+ * @author pgier
+ * @version $Id$
+ */
 public interface RmicConfig
 {
     public File getOutputDirectory();

@@ -1,0 +1,80 @@
+ ------
+ Usage
+ ------
+ Paul Gier <pgier at redhat.com>
+ ------
+ February 07 2008
+ ------
+
+Usage
+
+  By default, the <<<{{{rmic-mojo.html}rmic}}>>> goal will search for clases that implement java.rmi.Remote in the directory <<<$\{project.outputDirectory\}>>>.
+  Specific files can be included or excluded from compilation by using the includes and excludes parameters.
+
+  Output is written to the directory target/rmic-output.  However, this location can be changed using the outputDirectory parameter.
+
+Configuring includes/excludes and rmic params
+
+-------------------
+<project>
+   ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rmic-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rmic-process-classes</id>
+            <goals>
+              <goal>rmic</goal>
+            </goals>
+            <configuration>
+              <iiop>true</iiop>
+              <verbose>true</verbose>
+              <includes>
+                <include>**/RemoteImpl.class</include>
+              </includes>
+              <excludes>
+                <exclude>**/DontRmicThis.class</exclude>
+              </excludes>
+             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+     ...
+  </build>
+  ...
+</project>
+-------------------
+      
+Using the package goal
+
+-------------------
+<project>
+   ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rmic-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rmic-process-classes</id>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+     ...
+  </build>
+  ...
+</project>
+-------------------
+
+
+
+ 
