@@ -54,16 +54,12 @@ public abstract class AbstractRmiMojo
     protected Set excludes;
 
     /**
-     * @parameter expression="sun"
+     * The id of the rmi compiler to use.
+     * 
+     * @parameter default-value="sun"
      * @required
      */
     protected String compilerId;
-
-    /**
-     * @parameter
-     * @deprecated Use outputDirectory instead
-     */
-    private File outputClasses;
 
     /**
      * Specifies where to place rmic generated class files.
@@ -73,21 +69,66 @@ public abstract class AbstractRmiMojo
     private File outputDirectory;
 
     /**
+     * The version of the rmi protocol to which the stubs should be compiled.
+     * Valid values include 1.1, 1.2, compat.  See the rmic documentation for more
+     * information.  The default is 1.2.
+     *  
+     * @parameter
+     */
+    private String version;
+
+    /**
+     * Create stubs for IIOP.
+     *  
      * @parameter default-value="false"
      */
     private boolean iiop;
 
     /**
+     * Do not create stubs optimized for same process.
+     *  
+     * @parameter 
+     */
+    private boolean noLocalStubs;
+
+    /**
+     * Create IDL.
+     * 
      * @parameter default-value="false"
      */
     private boolean idl;
 
     /**
+     * Do not generate methods for valuetypes.
+     * 
+     * @parameter
+     */
+    private boolean noValueMethods;
+
+    /**
+     * Do not delete intermediate generated source files.
+     * 
      * @parameter default-value="false"
      */
     private boolean keep;
 
     /**
+     * Turn off rmic warnings.
+     * 
+     * @parameter
+     */
+    private boolean nowarn;
+
+    /**
+     * Enable verbose rmic output.
+     * 
+     * @parameter
+     */
+    private boolean verbose;
+
+    /**
+     * Directory tree where the compiled Remote classes are located.
+     * 
      * @parameter expression="${project.build.outputDirectory}"
      * @required
      */
@@ -98,6 +139,8 @@ public abstract class AbstractRmiMojo
     // ----------------------------------------------------------------------
 
     /**
+     * Compile classpath of the maven project.
+     * 
      * @parameter expression="${project.compileClasspathElements}"
      * @readonly
      */
@@ -119,10 +162,6 @@ public abstract class AbstractRmiMojo
      */
     public File getOutputDirectory()
     {
-        if ( outputClasses != null )
-        {
-            return outputClasses;
-        }
         return outputDirectory;
     }
 
@@ -144,5 +183,30 @@ public abstract class AbstractRmiMojo
     public boolean isKeep()
     {
         return keep;
+    }
+    
+    public String getVersion()
+    {
+        return version;
+    }
+    
+    public boolean isNowarn()
+    {
+        return nowarn;
+    }
+    
+    public boolean isVerbose()
+    {
+        return verbose;
+    }
+
+    public boolean isNoLocalStubs()
+    {
+        return noLocalStubs;
+    }
+
+    public boolean isNoValueMethods()
+    {
+        return noValueMethods;
     }
 }

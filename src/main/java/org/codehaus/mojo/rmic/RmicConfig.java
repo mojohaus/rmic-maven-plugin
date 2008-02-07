@@ -33,9 +33,19 @@ public interface RmicConfig
     
     public List getRmicClasspathElements();
 
+    public String getVersion();
+
     public boolean isIiop();
 
     public boolean isIdl();
 
     public boolean isKeep();
+    
+    public boolean isNowarn();
+    
+    public boolean isVerbose();
+    
+    public boolean isNoLocalStubs();
+    
+    public boolean isNoValueMethods();
 }

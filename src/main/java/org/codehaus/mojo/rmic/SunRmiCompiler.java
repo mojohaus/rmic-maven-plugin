@@ -139,25 +139,44 @@ public class SunRmiCompiler
         arguments.add( "-d" );
 
         arguments.add( rmiConfig.getOutputDirectory().getAbsolutePath() );
-                
+        
+        if ( rmiConfig.getVersion() != null )
+        {
+            arguments.add( "-v" + rmiConfig.getVersion() );
+        }
+        
         if ( rmiConfig.isIiop() )
         {
             arguments.add( "-iiop" );
+            
+            if ( rmiConfig.isNoLocalStubs() )
+            {
+                arguments.add( "-nolocalstubs" );
+            }
         }
         
         if ( rmiConfig.isIdl() )
         {
             arguments.add( "-idl" );
+            
+            if (rmiConfig.isNoValueMethods())
+            {
+                arguments.add( "-noValueMethods" );
+            }
         }
-         
+        
         if ( rmiConfig.isKeep() )
         {
             arguments.add( "-keep" );
         }
         
-        if ( getLogger().isDebugEnabled() )
+        if ( getLogger().isDebugEnabled() || rmiConfig.isVerbose() )
         {
             arguments.add( "-verbose" );
+        }
+        else if ( rmiConfig.isNowarn() )
+        {
+            arguments.add( "-nowarn" );
         }
 
         for ( Iterator it = rmiConfig.getRemoteClasses().iterator(); it.hasNext(); )
