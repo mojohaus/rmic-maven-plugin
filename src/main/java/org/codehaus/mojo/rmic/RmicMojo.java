@@ -40,14 +40,14 @@ import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
  * 
- * @goal process-classes
+ * @goal rmic
  * @phase process-classes
  * @requiresDependencyResolution
  * @description Enhances the application data objects.
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class ProcessClassesRmiMojo
+public class RmicMojo
     extends AbstractRmiMojo
     implements RmicConfig
 {
