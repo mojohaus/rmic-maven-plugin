@@ -177,13 +177,13 @@ public class SunRmiCompiler
 
         if ( getLogger().isInfoEnabled() )
         {
-            getLogger().info( "rmic arguments: " );
+            getLogger().debug( "rmic arguments: " );
 
             for ( int i = 0; i < args.length; i++ )
             {
                 String arg = args[i];
 
-                getLogger().info( arg );
+                getLogger().debug( arg );
             }
         }
 
