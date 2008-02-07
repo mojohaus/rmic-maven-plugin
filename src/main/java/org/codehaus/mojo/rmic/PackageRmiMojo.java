@@ -24,7 +24,6 @@ package org.codehaus.mojo.rmic;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -86,19 +85,12 @@ public class PackageRmiMojo
             jarArchiver.setDestFile( stubJar );
 
             // ----------------------------------------------------------------------
-            // Add the *_Stub classes
+            // Add all the classes from the output directory
             // ----------------------------------------------------------------------
 
-            for ( Iterator it = getSourceClasses().iterator(); it.hasNext(); )
-            {
-                String clazz = (String) it.next();
-
-                String[] includes = new String[] {
-                    clazz.replace( '.', '/' ) + "_Stub.class",
-                };
-
-                jarArchiver.addDirectory( getOutputDirectory(), includes, new String[ 0 ] );
-            }
+            String [] includes = {"**"};
+            String [] excludes = {};
+            jarArchiver.addDirectory( getOutputDirectory(), includes, excludes );
 
             getLog().info( "Building RMI stub jar: " + stubJar.getAbsolutePath() );
 

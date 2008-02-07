@@ -23,9 +23,8 @@ package org.codehaus.mojo.rmic;
  */
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Set;
 
 import org.apache.maven.plugin.AbstractMojo;
 
@@ -41,18 +40,24 @@ public abstract class AbstractRmiMojo
     // ----------------------------------------------------------------------
 
     /**
-     * The classes to compile with the RMI compiler.
-     *
+     * A list of inclusions when searching for classes to compile.
+     * 
      * @parameter
-     * @required
      */
-    private String remoteClasses;
+    protected Set includes;
+
+    /**
+     * A list of exclusions when searching for classes to compile.
+     * 
+     * @parameter
+     */
+    protected Set excludes;
 
     /**
      * @parameter expression="sun"
      * @required
      */
-    private String compilerId;
+    protected String compilerId;
 
     /**
      * @parameter
@@ -62,51 +67,45 @@ public abstract class AbstractRmiMojo
 
     /**
      * Specifies where to place rmic generated class files.
-     * @parameter default-value="${project.build.directory}/rmi-classes"
+     * 
+     * @parameter default-value="${project.build.directory}/rmic-output"
      */
     private File outputDirectory;
-    
+
     /**
      * @parameter default-value="false"
      */
     private boolean iiop;
-    
+
     /**
      * @parameter default-value="false"
      */
     private boolean idl;
-     
+
     /**
      * @parameter default-value="false"
      */
     private boolean keep;
-    
+
+    /**
+     * @parameter expression="${project.build.outputDirectory}"
+     * @required
+     */
+    private File classesDirectory;
+
     // ----------------------------------------------------------------------
     // Constant parameters
     // ----------------------------------------------------------------------
 
     /**
-     * @parameter expression="${project.build.outputDirectory}"
-     * @required
-     * @readonly
-     */
-    private File classes;
-
-    /**
      * @parameter expression="${project.compileClasspathElements}"
-     * @required
      * @readonly
      */
-    private List compileClasspath;
+    protected List projectCompileClasspathElements;
 
     // ----------------------------------------------------------------------
     // Methods
     // ----------------------------------------------------------------------
-
-    public String getRemoteClasses()
-    {
-        return remoteClasses;
-    }
 
     public String getCompilerId()
     {
@@ -115,6 +114,7 @@ public abstract class AbstractRmiMojo
 
     /**
      * Get the directory where rmic generated class files are written.
+     * 
      * @return the directory
      */
     public File getOutputDirectory()
@@ -126,32 +126,9 @@ public abstract class AbstractRmiMojo
         return outputDirectory;
     }
 
-    public File getClasses()
+    public File getClassesDirectory()
     {
-        return classes;
-    }
-
-    public List getCompileClasspath()
-    {
-        return compileClasspath;
-    }
-
-    public List getSourceClasses()
-    {
-        List sourceClasses = new ArrayList();
-
-        StringTokenizer tokenizer = new StringTokenizer( getRemoteClasses(), "," );
-
-        while ( tokenizer.hasMoreElements() )
-        {
-            String s = (String) tokenizer.nextElement();
-
-            s = s.trim();
-
-            sourceClasses.add( s );
-        }
-
-        return sourceClasses;
+        return classesDirectory;
     }
 
     public boolean isIiop()

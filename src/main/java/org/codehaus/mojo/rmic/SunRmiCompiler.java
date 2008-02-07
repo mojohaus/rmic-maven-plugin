@@ -47,7 +47,7 @@ public class SunRmiCompiler
     // RmiCompiler Implementation
     // ----------------------------------------------------------------------
 
-    public void execute( File[] path, RmiConfig rmiConfig )
+    public void execute( RmicConfig rmiConfig )
         throws RmiCompilerException
     {
         // ----------------------------------------------------------------------
@@ -127,20 +127,19 @@ public class SunRmiCompiler
 
         List arguments = new ArrayList();
 
-        if ( path.length > 0 )
+        List classpathList = rmiConfig.getRmicClasspathElements();
+        if ( classpathList.size() > 0 )
         {
-            String c = "";
+            StringBuffer classpath = new StringBuffer();
 
-            for ( int i = 0; i < path.length; i++ )
+            for ( int i = 0; i < classpathList.size(); i++ )
             {
-                File file = path[i];
-
-                c += file.getAbsolutePath() + File.pathSeparator;
+                classpath.append( classpathList.get( i ) + File.pathSeparator );
             }
 
             arguments.add( "-classpath" );
 
-            arguments.add( c );
+            arguments.add( classpath.toString() );
         }
 
         arguments.add( "-d" );
@@ -167,7 +166,7 @@ public class SunRmiCompiler
             arguments.add( "-verbose" );
         }
 
-        for ( Iterator it = rmiConfig.getSourceClasses().iterator(); it.hasNext(); )
+        for ( Iterator it = rmiConfig.getRemoteClasses().iterator(); it.hasNext(); )
         {
             String remoteClass = (String) it.next();
 

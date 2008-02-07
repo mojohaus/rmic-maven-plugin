@@ -25,12 +25,13 @@ package org.codehaus.mojo.rmic;
 import java.io.File;
 import java.util.List;
 
-public interface RmiConfig
+public interface RmicConfig
 {
-
     public File getOutputDirectory();
+
+    public List getRemoteClasses();
     
-    public List getSourceClasses();
+    public List getRmicClasspathElements();
 
     public boolean isIiop();
 
