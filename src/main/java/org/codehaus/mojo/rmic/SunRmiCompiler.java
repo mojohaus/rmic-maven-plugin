@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,24 +55,17 @@ public class SunRmiCompiler
         // Construct the RMI Compiler's class path.
         // ----------------------------------------------------------------------
 
-        IsolatedClassLoader classLoader = new IsolatedClassLoader();
-
         File toolsJar = new File( System.getProperty( "java.home" ), "../lib/tools.jar" );
-
-        if ( toolsJar.isFile() )
+        
+        URLClassLoader classLoader = null;
+        try 
         {
-            try
-            {
-                classLoader.addURL( toolsJar.toURL() );
-            }
-            catch ( MalformedURLException e )
-            {
-                throw new RmiCompilerException( "Error while converting '" + toolsJar.getAbsolutePath() + "' to a URL." );
-            }
+            URL [] classpathUrls = { toolsJar.toURL() };
+            classLoader = new URLClassLoader(classpathUrls, null);
         }
-        else
+        catch ( MalformedURLException e )
         {
-            getLogger().warn( "tools.jar doesn't exist: " + toolsJar.getAbsolutePath() );
+            throw new RmiCompilerException("Unable to resolve tools.jar: " + toolsJar);
         }
 
         Class clazz = null;

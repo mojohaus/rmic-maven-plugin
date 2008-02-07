@@ -143,6 +143,7 @@ public class RmicMojo
                 return;
             }
 
+            getLog().info( "Compiling " + remoteClasses.size() + " remote classes");
             rmiCompiler.execute( this );
         }
         catch ( RmiCompilerException e )
