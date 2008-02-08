@@ -64,7 +64,7 @@ public abstract class AbstractRmiMojo
     /**
      * Specifies where to place rmic generated class files.
      * 
-     * @parameter default-value="${project.build.directory}/rmic-output"
+     * @parameter default-value="${project.build.directory}/rmi-classes"
      */
     private File outputDirectory;
 

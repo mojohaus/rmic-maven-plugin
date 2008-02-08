@@ -25,6 +25,7 @@ package org.codehaus.mojo.rmic;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -36,22 +37,19 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
  * 
  * @goal package
  * @phase package
- *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class PackageRmiMojo
-    extends AbstractRmiMojo
+    extends AbstractMojo
 {
     /**
      * @parameter expression="${project.build.directory}"
-     * @required
      */
     private File target;
 
     /**
      * @parameter expression="${project.build.finalName}"
-     * @required
      */
     private String finalName;
 
@@ -69,6 +67,28 @@ public class PackageRmiMojo
     private String classifier;
 
     /**
+     * This directory contains the output of rmic (where the Stub classes are located). This is not the directory where
+     * the jar file will be written.
+     * 
+     * @parameter expression="${project.build.directory}/rmi-classes"
+     */
+    private File outputDirectory;
+
+    /**
+     * The file patterns to include in the jar. The default value is "** /_Stub.class"
+     * 
+     * @parameter
+     */
+    private String[] includes;
+
+    /**
+     * The file patterns to exclude from the jar.
+     * 
+     * @parameter
+     */
+    private String[] excludes;
+
+    /**
      * @component
      */
     private MavenProjectHelper projectHelper;
@@ -80,27 +100,29 @@ public class PackageRmiMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( includes == null )
+        {
+            includes = new String[] { "**/_Stub.class" };
+        }
+        if ( excludes == null )
+        {
+            excludes = new String[0];
+        }
+
         File stubJar = new File( target, finalName + "-" + classifier + ".jar" );
+
+        JarArchiver jarArchiver = new JarArchiver();
+
+        jarArchiver.setDestFile( stubJar );
 
         try
         {
-            JarArchiver jarArchiver = new JarArchiver();
-
-            jarArchiver.setDestFile( stubJar );
-
-            // ----------------------------------------------------------------------
-            // Add all the classes from the output directory
-            // ----------------------------------------------------------------------
-
-            String [] includes = {"**"};
-            String [] excludes = {};
-            jarArchiver.addDirectory( getOutputDirectory(), includes, excludes );
+            jarArchiver.addDirectory( outputDirectory, includes, excludes );
 
             getLog().info( "Building RMI stub jar: " + stubJar.getAbsolutePath() );
 
             jarArchiver.createArchive();
 
-            projectHelper.attachArtifact( project, "jar", classifier, stubJar );
         }
         catch ( ArchiverException e )
         {
@@ -110,5 +132,7 @@ public class PackageRmiMojo
         {
             throw new MojoExecutionException( "Could not create the RMI stub jar", e );
         }
+
+        projectHelper.attachArtifact( project, "jar", classifier, stubJar );
     }
 }
