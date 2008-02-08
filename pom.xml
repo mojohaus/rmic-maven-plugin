@@ -19,21 +19,19 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mojo</artifactId>
     <groupId>org.codehaus.mojo</groupId>
     <version>16</version>
-  </parent>	
+  </parent>
 
   <artifactId>rmic-maven-plugin</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-  <name>Maven RMI Compiler Plugin</name>
+  <name>RMI Compiler Maven Plugin</name>
 
   <issueManagement>
     <system>jira</system>
@@ -60,14 +58,14 @@ under the License.
       </plugin>
     </plugins>
   </reporting>
-  
+
   <developers>
     <developer>
       <id>kismet</id>
       <name>Stefano "Kismet" Lenzi</name>
       <email>protected</email>
       <roles>
-          <role>Developer</role>
+        <role>Developer</role>
       </roles>
       <timezone>EST</timezone>
     </developer>
@@ -76,11 +74,11 @@ under the License.
       <name>Trygve Laugstol</name>
       <email>trygvis@inamo.no</email>
       <roles>
-          <role>Developer</role>
+        <role>Developer</role>
       </roles>
     </developer>
-  </developers>  
-  
+  </developers>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>

@@ -8,16 +8,19 @@
 
 Usage
 
-  By default, the <<<{{{rmic-mojo.html}rmic}}>>> goal will search for clases that implement java.rmi.Remote in the directory <<<$\{project.outputDirectory\}>>>.
-  Specific files can be included or excluded from compilation by using the includes and excludes parameters.
+  By default, the <<<{{{rmic-mojo.html}rmic}}>>> goal will search for classes that implement <<<java.rmi.Remote>>> in
+  the directory <<<$\{project.build.outputDirectory\}>>>.
+  Specific files can be included or excluded from compilation by using the <<<\<includes\>>>> and <<<\<excludes\>>>>
+  parameters.
 
-  Output is written to the directory target/rmic-output.  However, this location can be changed using the outputDirectory parameter.
+  Output is written to the directory <<<target/rmic-output>>>.  However, this location can be changed using the
+  <<<\<outputDirectory\>>>> parameter.
 
-Configuring includes/excludes and rmic params
+* Configuring includes/excludes and rmic params
 
 -------------------
 <project>
-   ...
+  ...
   <build>
     <plugins>
       <plugin>
@@ -38,22 +41,22 @@ Configuring includes/excludes and rmic params
               <excludes>
                 <exclude>**/DontRmicThis.class</exclude>
               </excludes>
-             </configuration>
+            </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
-     ...
+    ...
   </build>
   ...
 </project>
 -------------------
-      
-Using the package goal
+
+* Using the package goal
 
 -------------------
 <project>
-   ...
+  ...
   <build>
     <plugins>
       <plugin>
@@ -69,12 +72,8 @@ Using the package goal
         </executions>
       </plugin>
     </plugins>
-     ...
+    ...
   </build>
   ...
 </project>
 -------------------
-
-
-
- 

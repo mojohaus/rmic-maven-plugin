@@ -1,5 +1,5 @@
  ------
- Introduction 
+ Introduction
  ------
  Stefano "Kismet" Lenzi
  Trygve Laugstol <trygvis@inamo.no>
@@ -8,29 +8,30 @@
  February 07 2008
  ------
 
-Maven RMI Compiler Plugin
+RMI Compiler Maven Plugin
 
-  This plugin works with Maven 2 and uses the the java rmic compiler to generate classes used in remote method invocation. 
-   
+  This plugin works with Maven 2 and uses the java rmic compiler to generate classes used in remote method invocation.
+
 * Goals Overview
 
-  * {{{rmic-mojo.html}rmic:rmic}}  This goal uses rmic to generate rmi stub and skeleton clases.
-     
-  * {{{package-mojo.html}rmic:package}} This goal packages stub and skeleton clases into a jar.
-  
+  * {{{rmic-mojo.html}rmic:rmic}}  This goal uses rmic to generate rmi stub and skeleton classes.
+
+  * {{{package-mojo.html}rmic:package}} This goal packages stub and skeleton classes into a jar.
+
 * Usage
 
-  This plugin is normally used after Java compilation, during the <<<process-classes>>> phase of a build.  
+  This plugin is normally used after Java compilation, during the <<<process-classes>>> phase of a build.
   Detailed instructions on how to use the RMIC Maven Plugin can be found on the {{{usage.html}usage}} page.
 
 * Examples
 
-  Below is a basic example of configuring your project build to use the rmic plugin.  By default, the plugin will search for
-  all classes that implement java.rmi.Remote interface.  Output will be written to the directory target/rmi-output.
+  Below is a basic example of configuring your project build to use the RMIC Plugin.  By default, the plugin will search
+  for all classes that implement the <<<java.rmi.Remote>>> interface.  Output will be written to the directory
+  <<<target/rmi-output>>>.
 
 -------------------
 <project>
-   ...
+  ...
   <build>
     <plugins>
       <plugin>
@@ -46,9 +47,9 @@ Maven RMI Compiler Plugin
         </executions>
       </plugin>
     </plugins>
-     ...
+    ...
   </build>
   ...
 </project>
 -------------------
-      
+
