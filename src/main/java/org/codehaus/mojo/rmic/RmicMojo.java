@@ -36,10 +36,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
- * 
+ *
  * @goal rmic
  * @phase process-classes
  * @requiresDependencyResolution
@@ -58,7 +59,7 @@ public class RmicMojo
     /**
      * Time in milliseconds between automatic recompilations.  A value of 0 means that
      * up to date rmic output classes will not be recompiled until the source classes change.
-     * 
+     *
      * @parameter default-value=0
      */
     private int staleMillis;
@@ -155,7 +156,7 @@ public class RmicMojo
     public List scanForRemoteClasses()
     {
         List remoteClasses = new ArrayList();
-        
+
         try
         {
             // Set up the classloader
@@ -175,7 +176,8 @@ public class RmicMojo
                 // Get the classname and load the class
                 File remoteClassFile = (File) it.next();
                 URI relativeURI = getClassesDirectory().toURI().relativize( remoteClassFile.toURI() );
-                String className = relativeURI.toString().replace( ".class", "" ).replace( "/", "." );
+                String className = StringUtils.replace(StringUtils.replace(relativeURI.toString(), ".class", "" ),
+                                                       "/", "." );
                 Class remoteClass = loader.loadClass( className );
 
                 // Check that each class implement java.rmi.Remote
@@ -195,7 +197,7 @@ public class RmicMojo
 
     /**
      * Returns a list of URL objects that represent the classpath elements.
-     * 
+     *
      * @return
      */
     protected List generateUrlCompileClasspath()
