@@ -144,7 +144,7 @@ public class RmicMojo
                 return;
             }
 
-            getLog().info( "Compiling " + remoteClasses.size() + " remote classes");
+            getLog().info( "Compiling " + remoteClasses.size() + " remote classes" );
             rmiCompiler.execute( this );
         }
         catch ( RmiCompilerException e )
@@ -171,10 +171,10 @@ public class RmicMojo
             scanner.addSourceMapping( new SuffixMapping( ".class", "_Stub.class" ) );
             Collection staleRemoteClasses = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
 
-            for ( Iterator it = staleRemoteClasses.iterator(); it.hasNext(); )
+            for ( Iterator iter = staleRemoteClasses.iterator(); iter.hasNext(); )
             {
                 // Get the classname and load the class
-                File remoteClassFile = (File) it.next();
+                File remoteClassFile = (File) iter.next();
                 URI relativeURI = getClassesDirectory().toURI().relativize( remoteClassFile.toURI() );
                 String className = StringUtils.replace(StringUtils.replace(relativeURI.toString(), ".class", "" ),
                                                        "/", "." );
@@ -185,6 +185,19 @@ public class RmicMojo
                 {
                     remoteClasses.add( className );
                 }
+            }
+            
+            // Check for classes in a classpath jar
+            for ( Iterator iter = includes.iterator(); iter.hasNext(); )
+            {
+                String include = (String) iter.next();
+                File includeFile = new File(getClassesDirectory(), include);
+                if ( include.contains( "*" ) || includeFile.exists() )
+                {
+                    continue;
+                }
+                // We have found a class that is not in the classes dir.
+                remoteClasses.add( include.replace( ".class", "").replace( "/", "." ) );
             }
         }
         catch ( Exception e )
