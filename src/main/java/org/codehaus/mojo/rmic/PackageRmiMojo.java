@@ -90,6 +90,8 @@ public class PackageRmiMojo
     private String[] excludes;
 
     /**
+     * The maven project helper.
+     * 
      * @component
      */
     private MavenProjectHelper projectHelper;
