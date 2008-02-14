@@ -75,7 +75,8 @@ public class PackageRmiMojo
     private File outputDirectory;
 
     /**
-     * The file patterns to include in the jar. The default value is "** /_Stub.class"
+     * The file patterns to include in the jar. By default, all classes ending with _Stub.class
+     * will be included.
      * 
      * @parameter
      */
@@ -89,6 +90,8 @@ public class PackageRmiMojo
     private String[] excludes;
 
     /**
+     * The maven project helper.
+     * 
      * @component
      */
     private MavenProjectHelper projectHelper;
@@ -102,7 +105,7 @@ public class PackageRmiMojo
     {
         if ( includes == null )
         {
-            includes = new String[] { "**/_Stub.class" };
+            includes = new String[] { "**/*_Stub.class" };
         }
         if ( excludes == null )
         {
