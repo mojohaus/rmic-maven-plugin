@@ -13,7 +13,7 @@ Usage
   Specific files can be included or excluded from compilation by using the <<<\<includes\>>>> and <<<\<excludes\>>>>
   parameters.
 
-  Output is written to the directory <<<target/rmic-output>>>.  However, this location can be changed using the
+  Output is by default written to the directory <<<target/rmi-classes>>>.  However, this location can be changed using the
   <<<\<outputDirectory\>>>> parameter.
 
 * Configuring includes/excludes and rmic params
@@ -52,6 +52,45 @@ Usage
 </project>
 -------------------
 
+* Running rmic against classes not in the main project classes
+
+  It may be necessary to generate rmi stubs for classes that are not in the main classes directory.
+  For these classes you must specify the fully qualified class name that you wish to compile.  As
+  long as the class is found on the classpath (i.e. in the project dependencies) rmic will be able to 
+  compile it.  The class can also be specified using the "/" delimited path to the class.
+
+-------------------
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rmic-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rmic-process-classes</id>
+            <goals>
+              <goal>rmic</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>some.specific.RemoteClass1</include>
+                <include>another/specific/dependency/RemoteClass2.class</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+-------------------
+
+
+
 * Using the package goal
 
 -------------------
@@ -68,6 +107,9 @@ Usage
             <goals>
               <goal>package</goal>
             </goals>
+            <excludes>
+              <exclude>**/*Junk_Stub.class</exclude>
+            </excludes>
           </execution>
         </executions>
       </plugin>
