@@ -192,12 +192,13 @@ public class RmicMojo
             {
                 String include = (String) iter.next();
                 File includeFile = new File(getClassesDirectory(), include);
-                if ( include.contains( "*" ) || includeFile.exists() )
+                if ( (include.indexOf( "*" ) != -1) || includeFile.exists() )
                 {
                     continue;
                 }
                 // We have found a class that is not in the classes dir.
-                remoteClasses.add( include.replace( ".class", "").replace( "/", "." ) );
+                String fqClassName = StringUtils.replace( StringUtils.replace( include, ".class", "" ), "/", "." );
+                remoteClasses.add( fqClassName );
             }
         }
         catch ( Exception e )
