@@ -180,8 +180,8 @@ public class RmicMojo
                                                        "/", "." );
                 Class remoteClass = loader.loadClass( className );
 
-                // Check that each class implement java.rmi.Remote
-                if ( java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() ) )
+                // Check that each class implements java.rmi.Remote, ignore interfaces unless in IIOP mode
+                if ( java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() || isIiop() ) )
                 {
                     remoteClasses.add( className );
                 }
