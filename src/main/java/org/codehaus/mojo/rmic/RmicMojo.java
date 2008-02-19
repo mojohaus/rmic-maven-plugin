@@ -43,8 +43,7 @@ import org.codehaus.plexus.util.StringUtils;
  *
  * @goal rmic
  * @phase process-classes
- * @requiresDependencyResolution
- * @description Enhances the application data objects.
+ * @requiresDependencyResolution compile
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
