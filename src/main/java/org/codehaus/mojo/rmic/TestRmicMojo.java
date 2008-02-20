@@ -27,27 +27,28 @@ import java.util.List;
 
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
+ * By default runs against files in the test-classes directory.
  * 
- * @goal rmic
- * @phase process-classes
- * @requiresDependencyResolution compile
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @goal test-rmic
+ * @phase process-test-classes
+ * @requiresDependencyResolution test
+ * @author pgier
  * @version $Id$
  */
-public class RmicMojo
+public class TestRmicMojo
     extends AbstractRmiMojo
 {
     /**
      * Specifies where to place rmic generated class files.
      * 
-     * @parameter default-value="${project.build.directory}/rmi-classes"
+     * @parameter default-value="${project.build.directory}/rmi-test-classes"
      */
     private File outputDirectory;
 
     /**
      * Directory tree where the compiled Remote classes are located.
      * 
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter expression="${project.build.testOutputDirectory}"
      * @required
      */
     private File classesDirectory;
@@ -55,10 +56,10 @@ public class RmicMojo
     /**
      * Compile classpath of the maven project.
      * 
-     * @parameter expression="${project.compileClasspathElements}"
+     * @parameter expression="${project.testClasspathElements}"
      * @readonly
      */
-    protected List projectCompileClasspathElements;
+    protected List projectTestClasspathElements;
 
     /**
      * Get the directory where rmic generated class files are written.
@@ -87,7 +88,7 @@ public class RmicMojo
      */
     public List getProjectClasspathElements()
     {
-        return projectCompileClasspathElements;
+        return projectTestClasspathElements;
     }
 
 }

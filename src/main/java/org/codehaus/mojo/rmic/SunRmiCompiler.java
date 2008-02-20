@@ -48,7 +48,7 @@ public class SunRmiCompiler
     // RmiCompiler Implementation
     // ----------------------------------------------------------------------
 
-    public void execute( RmicConfig rmiConfig )
+    public void execute( RmicConfig rmiConfig, List classesToCompile )
         throws RmiCompilerException
     {
         // ----------------------------------------------------------------------
@@ -179,7 +179,7 @@ public class SunRmiCompiler
             arguments.add( "-nowarn" );
         }
 
-        for ( Iterator it = rmiConfig.getRemoteClasses().iterator(); it.hasNext(); )
+        for ( Iterator it = classesToCompile.iterator(); it.hasNext(); )
         {
             String remoteClass = (String) it.next();
 

@@ -23,6 +23,7 @@
           <execution>
             <goals>
               <goal>rmic</goal>
+              <goal>test-rmic</goal>
             </goals>
             <configuration>
               <includes>

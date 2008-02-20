@@ -36,8 +36,6 @@ public interface RmicConfig
 {
     public File getOutputDirectory();
 
-    public List getRemoteClasses();
-    
     public List getRmicClasspathElements();
 
     public String getVersion();
