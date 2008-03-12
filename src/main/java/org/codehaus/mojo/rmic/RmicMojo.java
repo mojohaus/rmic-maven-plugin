@@ -38,7 +38,9 @@ public class RmicMojo
     extends AbstractRmiMojo
 {
     /**
-     * Specifies where to place rmic generated class files.
+     * Specifies where to place rmic generated class files.  If the generated files 
+     * need to be included in the main project artifact, this parameter can be set 
+     * to ${project.build.outputDirectory}.
      * 
      * @parameter default-value="${project.build.directory}/rmi-classes"
      */

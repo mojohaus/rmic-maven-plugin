@@ -39,7 +39,9 @@ public class TestRmicMojo
     extends AbstractRmiMojo
 {
     /**
-     * Specifies where to place rmic generated class files.
+     * Specifies where to place rmic generated class files. If the generated files 
+     * need to be included in the project test artifact, this parameter can be set 
+     * to ${project.build.testOutputDirectory}.
      * 
      * @parameter default-value="${project.build.directory}/rmi-test-classes"
      */

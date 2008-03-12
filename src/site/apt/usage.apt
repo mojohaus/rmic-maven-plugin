@@ -14,7 +14,8 @@ Usage
   parameters.
 
   Output is by default written to the directory <<<target/rmi-classes>>>.  However, this location can be changed using the
-  <<<\<outputDirectory\>>>> parameter.
+  <<<\<outputDirectory\>>>> parameter.  For example, to output the stubs directly to the classes directory for inclusion
+  in the main project jar, outputDirectory can be set to <<<$\{project.build.outputDirectory\}>>>.
 
 * Configuring includes/excludes and rmic params
 
@@ -89,7 +90,13 @@ Usage
 </project>
 -------------------
 
+* Including the stub classes in the main project jar
 
+  Output is by default written to the directory <<<target/rmi-classes>>>.  Using this default behavior the stub
+  classes will not be included in the main project artifact.  To include the stubs in the main project jar the
+  outputDirectory can be set to <<<$\{project.build.outputDirectory\}>>>.
+  
+  Similarly, to include the stubs in the test jar the output directory should be set to <<<$\{project.build.testOutputDirectory\}>>>
 
 * Using the package goal
 
