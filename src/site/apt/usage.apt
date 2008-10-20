@@ -96,7 +96,7 @@ Usage
   classes will not be included in the main project artifact.  To include the stubs in the main project jar the
   outputDirectory can be set to <<<$\{project.build.outputDirectory\}>>>.
   
-  Similarly, to include the stubs in the test jar the output directory should be set to <<<$\{project.build.testOutputDirectory\}>>>
+  Similarly, to include the stubs in the test jar the <<<testOutputDirectory>>> should be set to <<<$\{project.build.testOutputDirectory\}>>>
 
 * Using the package goal
 

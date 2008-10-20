@@ -16,6 +16,8 @@ RMI Compiler Maven Plugin
 
   * {{{rmic-mojo.html}rmic:rmic}}  This goal uses rmic to generate rmi stub and skeleton classes.
 
+  * {{{test-rmic-mojo.html}rmic:test-rmic}}  This goal uses rmic to generate rmi stub and skeleton classes from the project test classes.
+
   * {{{package-mojo.html}rmic:package}} This goal packages stub and skeleton classes into a jar.
 
 * Usage

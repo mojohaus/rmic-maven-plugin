@@ -49,8 +49,7 @@ public class RmicMojo
     /**
      * Directory tree where the compiled Remote classes are located.
      * 
-     * @parameter expression="${project.build.outputDirectory}"
-     * @required
+     * @parameter default-value="${project.build.outputDirectory}"
      */
     private File classesDirectory;
 

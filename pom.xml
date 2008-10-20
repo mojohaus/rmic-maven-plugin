@@ -25,7 +25,7 @@ under the License.
   <parent>
     <artifactId>mojo</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>16</version>
+    <version>17</version>
   </parent>
 
   <artifactId>rmic-maven-plugin</artifactId>

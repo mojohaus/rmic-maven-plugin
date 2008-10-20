@@ -74,7 +74,6 @@ public abstract class AbstractRmiMojo
      * The id of the rmi compiler to use.
      * 
      * @parameter default-value="sun"
-     * @required
      */
     protected String compilerId;
 

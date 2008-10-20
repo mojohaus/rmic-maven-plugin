@@ -44,16 +44,17 @@ public class TestRmicMojo
      * to ${project.build.testOutputDirectory}.
      * 
      * @parameter default-value="${project.build.directory}/rmi-test-classes"
+     * @since 1.0
      */
-    private File outputDirectory;
+    private File testOutputDirectory;
 
     /**
      * Directory tree where the compiled Remote classes are located.
      * 
-     * @parameter expression="${project.build.testOutputDirectory}"
-     * @required
+     * @parameter default-value="${project.build.testOutputDirectory}"
+     * @since 1.0
      */
-    private File classesDirectory;
+    private File testClassesDirectory;
 
     /**
      * Compile classpath of the maven project.
@@ -70,7 +71,7 @@ public class TestRmicMojo
      */
     public File getOutputDirectory()
     {
-        return outputDirectory;
+        return testOutputDirectory;
     }
 
     /**
@@ -80,7 +81,7 @@ public class TestRmicMojo
      */
     public File getClassesDirectory()
     {
-        return classesDirectory;
+        return testClassesDirectory;
     }
 
     /**
