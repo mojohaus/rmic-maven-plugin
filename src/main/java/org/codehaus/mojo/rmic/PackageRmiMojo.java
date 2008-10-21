@@ -96,10 +96,11 @@ public class PackageRmiMojo
      */
     private MavenProjectHelper projectHelper;
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
+    /**
+     * Execute the plugin
+     * 
+     * @throws MojoExecutionException If there is a problem executing the plugin.
+     */
     public void execute()
         throws MojoExecutionException
     {

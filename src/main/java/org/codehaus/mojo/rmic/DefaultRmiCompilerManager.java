@@ -35,10 +35,13 @@ public class DefaultRmiCompilerManager implements RmiCompilerManager
      */
     private Map rmiCompilers;
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
+    /**
+     * Default compiler factory.
+     * 
+     * @param id The ID of the compiler.  The valid IDs are located in the components.xml file.
+     * @throws NoSuchRmiCompilerException If the compiler is not found
+     * @return The compiler object
+     */
     public RmiCompiler getRmiCompiler( String id )
         throws NoSuchRmiCompilerException
     {

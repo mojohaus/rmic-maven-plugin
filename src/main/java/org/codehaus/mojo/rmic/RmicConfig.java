@@ -34,23 +34,69 @@ import java.util.List;
  */
 public interface RmicConfig
 {
-    public File getOutputDirectory();
+    /**
+     * The directory to put the output
+     * 
+     * @return The output directory
+     */
+    File getOutputDirectory();
 
-    public List getRmicClasspathElements();
+    /**
+     * 
+     * @return The elements of the classpath
+     */
+    List getRmicClasspathElements();
 
-    public String getVersion();
+    /**
+     * 
+     * @return The version of the compiler to use
+     */
+    String getVersion();
 
-    public boolean isIiop();
+    /**
+     * 
+     * @return Whether iiop stubs should be generated
+     */
+    boolean isIiop();
 
-    public boolean isIdl();
+    /**
+     * 
+     * @return Create IDL
+     */
+    boolean isIdl();
 
-    public boolean isKeep();
+    /**
+     * Keep intermediate files
+     * 
+     * @return true or false
+     */
+    boolean isKeep();
     
-    public boolean isNowarn();
+    /**
+     * Turn off warnings
+     * 
+     * @return true or false
+     */
+    boolean isNowarn();
     
-    public boolean isVerbose();
+    /**
+     * Output messages about compilation
+     * 
+     * @return true or false
+     */
+    boolean isVerbose();
     
-    public boolean isNoLocalStubs();
+    /**
+     * Do not create stubs optimized for same process.
+     * 
+     * @return true or false
+     */
+    boolean isNoLocalStubs();
     
-    public boolean isNoValueMethods();
+    /**
+     * Do not create methods for valuetypes.
+     * 
+     * @return true or false
+     */
+    boolean isNoValueMethods();
 }

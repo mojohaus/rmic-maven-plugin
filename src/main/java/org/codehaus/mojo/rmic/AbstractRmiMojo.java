@@ -182,6 +182,8 @@ public abstract class AbstractRmiMojo
 
     /**
      * Main mojo execution.
+     * 
+     * @throws MojoExecutionException if there is a problem executing the mojo.
      */
     public void execute()
         throws MojoExecutionException
@@ -288,7 +290,8 @@ public abstract class AbstractRmiMojo
                 Class remoteClass = loader.loadClass( className );
 
                 // Check that each class implements java.rmi.Remote, ignore interfaces unless in IIOP mode
-                if ( java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() || isIiop() ) )
+                if ( java.rmi.Remote.class.isAssignableFrom( remoteClass ) 
+                                && ( !remoteClass.isInterface() || isIiop() ) )
                 {
                     remoteClasses.add( className );
                 }

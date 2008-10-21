@@ -29,6 +29,12 @@ package org.codehaus.mojo.rmic;
  */
 public interface RmiCompilerManager
 {
+    /**
+     * 
+     * @param id The id of the compiler 
+     * @return The compiler object
+     * @throws NoSuchRmiCompilerException If the manager cannot find a matching compiler 
+     */
     RmiCompiler getRmiCompiler( String id )
         throws NoSuchRmiCompilerException;
 }

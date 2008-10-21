@@ -29,11 +29,21 @@ package org.codehaus.mojo.rmic;
 public class RmiCompilerException
     extends Exception
 {
+    /**
+     * Basic constructor
+     * 
+     * @param message The message
+     */
     public RmiCompilerException( String message )
     {
         super( message );
     }
 
+    /**
+     * 
+     * @param message The cause of the exception
+     * @param cause Original cause of the exception
+     */
     public RmiCompilerException( String message, Throwable cause )
     {
         super( message, cause );

@@ -30,8 +30,13 @@ import java.util.List;
  */
 public interface RmiCompiler
 {
-    String ROLE = RmiCompiler.class.getName();
-
+    /**
+     * Run the rmi compilation against the compiled classes.
+     * 
+     * @param rmiConfig The settings to be passed to the rmi compiler
+     * @param classesToCompile List of class names to compile
+     * @throws RmiCompilerException If there is a problem during compilation
+     */
     void execute( RmicConfig rmiConfig, List classesToCompile )
         throws RmiCompilerException;
 }

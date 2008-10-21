@@ -44,10 +44,18 @@ public class SunRmiCompiler
     extends AbstractLogEnabled
     implements RmiCompiler
 {
-    // ----------------------------------------------------------------------
-    // RmiCompiler Implementation
-    // ----------------------------------------------------------------------
-
+    /**
+     * The name of the class to use for rmi compilation.
+     */
+    public static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
+    
+    /**
+     * Execute the compiler
+     * 
+     * @param rmiConfig The config object
+     * @param classesToCompile The list of classes to rmi compile
+     * @throws RmiCompilerException if there is a problem during compile
+     */
     public void execute( RmicConfig rmiConfig, List classesToCompile )
         throws RmiCompilerException
     {
@@ -61,58 +69,35 @@ public class SunRmiCompiler
         try 
         {
             URL [] classpathUrls = { toolsJar.toURL() };
-            classLoader = new URLClassLoader(classpathUrls, null);
+            classLoader = new URLClassLoader( classpathUrls, null );
         }
         catch ( MalformedURLException e )
         {
-            throw new RmiCompilerException("Unable to resolve tools.jar: " + toolsJar);
+            throw new RmiCompilerException( "Unable to resolve tools.jar: " + toolsJar );
         }
 
-        Class clazz = null;
+        Class rmicMainClass = null;
 
         // ----------------------------------------------------------------------
         // Try to load the rmic class
         // ----------------------------------------------------------------------
 
-        String[] classes = { "sun.rmi.rmic.Main", };
-
-        for ( int i = 0; i < classes.length; i++ )
+        try
         {
-            String className = classes[i];
-
-            try
-            {
-                clazz = classLoader.loadClass( className );
-
-                break;
-            }
-            catch ( ClassNotFoundException e )
-            {
-                // continue
-            }
+            rmicMainClass = classLoader.loadClass( RMIC_CLASSNAME );
         }
-
-        if ( clazz == null )
+        catch ( ClassNotFoundException e )
         {
-            getLogger().info( "Looked for these classes:" );
-
-            for ( int i = 0; i < classes.length; i++ )
-            {
-                String className = classes[i];
-
-                getLogger().info( " * " + className );
-            }
-
+            getLogger().warn( "Could not find rmi compiler: " + RMIC_CLASSNAME );
             getLogger().info( "Within this classpath:" );
 
-            for ( int it = 0; it < classLoader.getURLs().length; it++ )
+            for ( int it = 0; it < classLoader.getURLs().length; ++it )
             {
                 URL url = classLoader.getURLs()[it];
 
                 getLogger().info( " * " + url.toExternalForm() );
             }
-
-            throw new RmiCompilerException( "Could not find any of the classes required for executing rmic." );
+            throw new RmiCompilerException( "Could not find " + RMIC_CLASSNAME + " on the classpath." );
         }
 
         // ----------------------------------------------------------------------
@@ -159,7 +144,7 @@ public class SunRmiCompiler
         {
             arguments.add( "-idl" );
             
-            if (rmiConfig.isNoValueMethods())
+            if ( rmiConfig.isNoValueMethods() )
             {
                 arguments.add( "-noValueMethods" );
             }
@@ -200,18 +185,16 @@ public class SunRmiCompiler
             }
         }
 
-        // ----------------------------------------------------------------------
-        // Execute it
-        // ----------------------------------------------------------------------
-
-        executeMain( clazz, args );
+        executeMain( rmicMainClass, args );
     }
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    private void executeMain( Class clazz, String[] args )
+    /**
+     * 
+     * @param rmicMainClass The class to use to run the rmic
+     * @param args Arguments to be passed to rmic
+     * @throws RmiCompilerException If there is a problem during the compile
+     */
+    private void executeMain( Class rmicMainClass, String[] args )
         throws RmiCompilerException
     {
         Method compile;
@@ -220,11 +203,11 @@ public class SunRmiCompiler
 
         try
         {
-            Constructor constructor = clazz.getConstructor( new Class[] { OutputStream.class, String.class } );
+            Constructor constructor = rmicMainClass.getConstructor( new Class[] { OutputStream.class, String.class } );
 
             main = constructor.newInstance( new Object[] { System.out, "rmic" } );
 
-            compile = clazz.getMethod( "compile", new Class[] { String[].class } );
+            compile = rmicMainClass.getMethod( "compile", new Class[] { String[].class } );
         }
         catch ( NoSuchMethodException e )
         {
@@ -254,20 +237,6 @@ public class SunRmiCompiler
         catch ( InvocationTargetException e )
         {
             throw new RmiCompilerException( "Error while executing rmic.", e );
-        }
-    }
-
-    public static URL fileToURL( File file )
-        throws RmiCompilerException
-    {
-        try
-        {
-            return file.toURL();
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new RmiCompilerException( "Could not make a URL out of the class path element " + "'" +
-                file.toString() + "'." );
         }
     }
 }

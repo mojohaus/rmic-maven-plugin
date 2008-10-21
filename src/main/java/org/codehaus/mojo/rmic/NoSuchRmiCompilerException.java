@@ -29,13 +29,25 @@ package org.codehaus.mojo.rmic;
 public class NoSuchRmiCompilerException
     extends Exception
 {
+    /**
+     * The id of the compiler
+     */
     private String id;
 
+    /**
+     * Basic constructor
+     * 
+     * @param id The id of the compiler
+     */
     public NoSuchRmiCompilerException( String id )
     {
         this.id = id;
     }
 
+    /**
+     * 
+     * @return The id of the compiler
+     */
     public String getId()
     {
         return id;
