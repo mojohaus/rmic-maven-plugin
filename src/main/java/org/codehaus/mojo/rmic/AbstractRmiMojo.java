@@ -215,8 +215,8 @@ public abstract class AbstractRmiMojo
         {
             if ( !getOutputDirectory().mkdirs() )
             {
-                throw new MojoExecutionException( "Could not make output directory: " + "'" +
-                    getOutputDirectory().getAbsolutePath() + "'." );
+                throw new MojoExecutionException( "Could not make output directory: " + "'" 
+                                                  + getOutputDirectory().getAbsolutePath() + "'." );
             }
         }
 
@@ -248,12 +248,12 @@ public abstract class AbstractRmiMojo
     public List getRmicClasspathElements()
     {
         List classpathElements = getProjectClasspathElements();
+        
+        if ( !classpathElements.contains( getClassesDirectory().getAbsolutePath() ) )
         {
-            if ( !classpathElements.contains( getClassesDirectory().getAbsolutePath() ) )
-            {
-                classpathElements.add( getClassesDirectory().getAbsolutePath() );
-            }
+            classpathElements.add( getClassesDirectory().getAbsolutePath() );
         }
+
         return classpathElements;
     }
 

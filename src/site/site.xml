@@ -22,7 +22,7 @@
       <item name="Usage" href="usage.html"/>
     </menu>
     <menu name="References">
-      <item name="Java RMI" href="http://java.sun.com/javase/technologies/core/basic/rmi/index.jsp"/>
+      <item name="Java RMI" href="http://java.sun.com/javase/technologies/core/basic/rmi/"/>
     </menu>
   </body>
 </project>

@@ -44,17 +44,22 @@ public class PackageRmiMojo
     extends AbstractMojo
 {
     /**
-     * @parameter expression="${project.build.directory}"
+     * The directory to which the generated jar should be written.
+     * 
+     * @parameter default-value="${project.build.directory}"
      */
     private File target;
 
     /**
-     * @parameter expression="${project.build.finalName}"
+     * The base name of the generated jar.  This name does not include
+     * the classifier or the extension.
+     * 
+     * @parameter default-value="${project.build.finalName}"
      */
     private String finalName;
 
     /**
-     * @parameter expression="${project}"
+     * @parameter default-value="${project}"
      * @readonly
      */
     private MavenProject project;
@@ -70,7 +75,7 @@ public class PackageRmiMojo
      * This directory contains the output of rmic (where the Stub classes are located). This is not the directory where
      * the jar file will be written.
      * 
-     * @parameter expression="${project.build.directory}/rmi-classes"
+     * @parameter default-value="${project.build.directory}/rmi-classes"
      */
     private File outputDirectory;
 

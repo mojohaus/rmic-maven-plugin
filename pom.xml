@@ -1,43 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
--->
+ * Copyright (c) 2008, Codehaus.org
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>mojo</artifactId>
     <groupId>org.codehaus.mojo</groupId>
-    <version>17</version>
+    <artifactId>mojo-parent</artifactId>
+    <version>18</version>
   </parent>
 
   <artifactId>rmic-maven-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
+  
   <name>RMI Compiler Maven Plugin</name>
+  <description>RMI Compiler Maven Plugin</description>
+  <url>http://mojo.codehaus.org/rmic-maven-plugin/</url>
+  <inceptionYear>2006</inceptionYear>
+  
+  <prerequisites>
+    <maven>2.0</maven>
+  </prerequisites>
 
   <issueManagement>
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MRMIC</url>
   </issueManagement>
 
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/rmic-maven-plugin</url>
+  </scm>
+  
   <licenses>
     <license>
       <name>The MIT License</name>
@@ -45,19 +62,6 @@ under the License.
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-checkstyle-plugin/src/main/resources/config/maven_checks.xml</configLocation>
-          <headerLocation>header.txt</headerLocation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <developers>
     <developer>
@@ -105,6 +109,11 @@ under the License.
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-compiler-api</artifactId>
       <version>1.5.3</version>
     </dependency>
@@ -114,6 +123,20 @@ under the License.
       <version>1.0-alpha-9</version>
     </dependency>
   </dependencies>
+  
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <configLocation>http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-checkstyle-plugin/src/main/resources/config/maven_checks.xml</configLocation>
+          <headerLocation>LICENSE.txt</headerLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
   
   <profiles>
     <profile>
