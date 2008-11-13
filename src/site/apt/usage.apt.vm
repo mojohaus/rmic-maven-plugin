@@ -27,7 +27,7 @@ Usage
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rmic-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>rmic-process-classes</id>
@@ -69,7 +69,7 @@ Usage
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rmic-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>rmic-process-classes</id>
@@ -110,7 +110,7 @@ Usage
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rmic-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>rmic-process-classes</id>
