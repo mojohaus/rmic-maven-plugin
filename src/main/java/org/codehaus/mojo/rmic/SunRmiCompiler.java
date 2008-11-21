@@ -173,7 +173,7 @@ public class SunRmiCompiler
 
         String[] args = (String[]) arguments.toArray( new String[arguments.size()] );
 
-        if ( getLogger().isInfoEnabled() )
+        if ( getLogger().isDebugEnabled() )
         {
             getLogger().debug( "rmic arguments: " );
 
