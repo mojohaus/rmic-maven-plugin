@@ -79,7 +79,8 @@ public abstract class AbstractRmiMojo
 
     /**
      * The version of the rmi protocol to which the stubs should be compiled. Valid values include 1.1, 1.2, compat. See
-     * the rmic documentation for more information. The default is 1.2.
+     * the rmic documentation for more information. If nothing is specified the underlying rmi compiler will
+     * choose the default value.  For example, in sun jdk 1.5 the default is 1.2.
      * 
      * @parameter
      */
