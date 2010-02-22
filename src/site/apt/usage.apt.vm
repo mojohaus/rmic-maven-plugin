@@ -113,13 +113,15 @@ Usage
         <version>${project.version}</version>
         <executions>
           <execution>
-            <id>rmic-process-classes</id>
+            <id>rmic-package</id>
             <goals>
               <goal>package</goal>
             </goals>
-            <excludes>
-              <exclude>**/*Junk_Stub.class</exclude>
-            </excludes>
+            <configuration>
+              <excludes>
+                <exclude>**/*Junk_Stub.class</exclude>
+              </excludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
