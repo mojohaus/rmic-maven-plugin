@@ -32,7 +32,7 @@
   </parent>
 
   <artifactId>rmic-maven-plugin</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <packaging>maven-plugin</packaging>
   
   <name>RMI Compiler Maven Plugin</name>
@@ -50,9 +50,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/rmic-maven-plugin</url>
+    <connection>scm:svn:http://svn.codehaus.org/mojo/tags/rmic-maven-plugin-1.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/rmic-maven-plugin-1.1</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/tags/rmic-maven-plugin-1.1</url>
   </scm>
   
   <licenses>
