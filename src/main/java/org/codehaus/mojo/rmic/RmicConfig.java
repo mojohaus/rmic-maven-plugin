@@ -1,7 +1,7 @@
 package org.codehaus.mojo.rmic;
 
 /*
- * Copyright (c) 2008, Codehaus.org
+ * Copyright (c) 2008-2012, Codehaus.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,80 +22,66 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.util.List;
-
 /**
  * Interface containing required methods for retrieving information
  * necessary for rmi compilation to take place.
- * 
+ *
  * @author pgier
  * @version $Id$
  */
 public interface RmicConfig
 {
     /**
-     * The directory to put the output
-     * 
-     * @return The output directory
-     */
-    File getOutputDirectory();
-
-    /**
-     * 
-     * @return The elements of the classpath
-     */
-    List getRmicClasspathElements();
-
-    /**
-     * 
      * @return The version of the compiler to use
      */
     String getVersion();
 
     /**
-     * 
      * @return Whether iiop stubs should be generated
      */
     boolean isIiop();
 
     /**
-     * 
+     * @return Whether skeletons should be poa-compatible should be generated
+     */
+    boolean isPoa();
+
+    /**
      * @return Create IDL
      */
     boolean isIdl();
 
     /**
      * Keep intermediate files
-     * 
+     *
      * @return true or false
      */
     boolean isKeep();
-    
+
     /**
      * Turn off warnings
-     * 
+     *
      * @return true or false
      */
     boolean isNowarn();
-    
+
     /**
      * Output messages about compilation
-     * 
+     *
      * @return true or false
      */
     boolean isVerbose();
-    
+
     /**
      * Do not create stubs optimized for same process.
-     * 
+     *
      * @return true or false
      */
     boolean isNoLocalStubs();
-    
+
     /**
      * Do not create methods for valuetypes.
-     * 
+     *
      * @return true or false
      */
     boolean isNoValueMethods();

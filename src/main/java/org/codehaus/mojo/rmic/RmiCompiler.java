@@ -1,7 +1,7 @@
 package org.codehaus.mojo.rmic;
 
 /*
- * Copyright (c) 2004, Codehaus.org
+ * Copyright (c) 2004-2012, Codehaus.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,6 +22,8 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.Log;
+
 import java.util.List;
 
 /**
@@ -32,11 +34,22 @@ public interface RmiCompiler
 {
     /**
      * Run the rmi compilation against the compiled classes.
-     * 
-     * @param rmiConfig The settings to be passed to the rmi compiler
+     *
+     * @param mojo
+     * @param rmiConfig        The settings to be passed to the rmi compiler
      * @param classesToCompile List of class names to compile
      * @throws RmiCompilerException If there is a problem during compilation
      */
-    void execute( RmicConfig rmiConfig, List classesToCompile )
-        throws RmiCompilerException;
+    void execute( AbstractRmiMojo mojo, RmicConfig rmiConfig, List classesToCompile )
+            throws RmiCompilerException;
+
+    /**
+     * Defines the logger to use.
+     */
+    void setLog( Log log );
+
+    /**
+     * Returns the defined log.
+     */
+    Log getLog();
 }
