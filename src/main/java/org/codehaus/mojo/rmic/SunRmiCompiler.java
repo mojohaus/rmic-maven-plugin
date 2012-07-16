@@ -132,7 +132,7 @@ public class SunRmiCompiler implements RmiCompiler
         {
             if ( rmiConfig.isPoa() )
             {
-                throw new RmiCompilerException( "IIOP must be enabled in order to use the POA option");
+                throw new RmiCompilerException( "IIOP must be enabled in order to use the POA option" );
             }
 
         }
@@ -184,7 +184,7 @@ public class SunRmiCompiler implements RmiCompiler
 
     private String buildClasspath( List classpathList )
     {
-        StringBuffer classpath = new StringBuffer( classpathList.get(0).toString() );
+        StringBuffer classpath = new StringBuffer( classpathList.get( 0 ).toString() );
         for ( int i = 1; i < classpathList.size(); i++ )
         {
             classpath.append( File.pathSeparator ).append( classpathList.get( i ) );
