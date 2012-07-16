@@ -252,6 +252,12 @@ public abstract class AbstractRmiMojo
         RmiCompiler rmiCompiler = new SunRmiCompiler();
         rmiCompiler.setLog( getLog() );
 
+        if ( source.isVerbose() )
+        {
+            System.out.println( source );
+        }
+
+
         if ( !getOutputDirectory().isDirectory() )
         {
             if ( !getOutputDirectory().mkdirs() )

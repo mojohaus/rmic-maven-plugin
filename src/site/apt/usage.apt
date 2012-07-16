@@ -35,14 +35,17 @@ Usage
               <goal>rmic</goal>
             </goals>
             <configuration>
-              <iiop>true</iiop>
-              <verbose>true</verbose>
-              <includes>
-                <include>**/RemoteImpl.class</include>
-              </includes>
-              <excludes>
-                <exclude>**/DontRmicThis.class</exclude>
-              </excludes>
+              <sources>
+                <source>
+                  <includes>
+                    <include>**/RemoteImpl.class</include>
+                  </includes>
+                  <excludes>
+                    <exclude>**/DontRmicThis.class</exclude>
+                  </excludes>
+                  <iiop>true</iiop>
+                </source>
+              </sources>
             </configuration>
           </execution>
         </executions>

@@ -80,6 +80,19 @@ public class RmicTestCase extends TestCase
         fileSystem.defineExpectedScan( DEFAULT_PROJECT_OUTPUT_DIRECTORY, DEFAULT_INCLUDES, DEFAULT_EXCLUDES, scanResults );
     }
 
+    public void test_createClasspath() throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
+    {
+        defineDefaultScan();
+        setCompileClasspathElements( new ArrayList( Arrays.asList( new String[]{"xy"} ) ) );
+
+        mojo.execute();
+
+        assertEquals( 1, invocations.size() );
+        Invocation invocation = (Invocation) invocations.get( 0 );
+        invocation.assertArgumentSequenceFound( "-classpath",
+                "xy" + File.pathSeparator + DEFAULT_PROJECT_OUTPUT_DIRECTORY );
+    }
+
     public void test_withIiopEnabled_shouldProcessRemoteClassesAndInterfaces()
             throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
     {
@@ -170,10 +183,27 @@ public class RmicTestCase extends TestCase
         invocation.assertArgumentFound( "-v1.2" );
     }
 
+    public void test_withPoaSpecifiedAndNotIiop_throwException() throws Exception
+    {
+        defineDefaultScan();
+
+        enablePoa( mojo );
+        try
+        {
+            mojo.execute();
+            fail( "No exception thrown" );
+        }
+        catch ( MojoExecutionException e )
+        {
+            // expect this
+        }
+    }
+
     public void test_withPoaSpecifiedSetSwitches() throws Exception
     {
         defineDefaultScan();
 
+        enableIiop( mojo );
         enablePoa( mojo );
         mojo.execute();
 
@@ -203,13 +233,14 @@ public class RmicTestCase extends TestCase
         Source source2 = addNewSource();
         defineIncludes( source2, INCLUDES_B );
         enablePoa( source2 );
-
+        enableIiop( mojo );
         mojo.execute();
 
         assertEquals( "Number of invocations", 2, invocations.size() );
         Invocation invocation1 = (Invocation) invocations.get( 0 );
         invocation1.assertArgumentsFound( "a.b.RemoteClass1", "a.b.RemoteClass2" );
         invocation1.assertArgumentsNotFound( "c.d.RemoteClass1", "-poa" );
+
         Invocation invocation2 = (Invocation) invocations.get( 1 );
         invocation2.assertArgumentsFound( "c.d.RemoteClass1", "c.d.RemoteClass2" );
         invocation2.assertArgumentsNotFound( "a.b.RemoteClass1", "a.b.RemoteClass2" );

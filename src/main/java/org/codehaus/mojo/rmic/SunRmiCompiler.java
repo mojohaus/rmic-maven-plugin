@@ -103,24 +103,11 @@ public class SunRmiCompiler implements RmiCompiler
         List classpathList = mojo.getRmicClasspathElements();
         if ( classpathList.size() > 0 )
         {
-            StringBuffer classpath = new StringBuffer();
-
-            for ( int i = 0; i < classpathList.size(); i++ )
-            {
-                if ( i != 0 )
-                {
-                    classpath.append( File.pathSeparator );
-                }
-                classpath.append( classpathList.get( i ) );
-            }
-
             arguments.add( "-classpath" );
-
-            arguments.add( classpath.toString() );
+            arguments.add( buildClasspath( classpathList ) );
         }
 
         arguments.add( "-d" );
-
         arguments.add( mojo.getOutputDirectory().getAbsolutePath() );
 
         if ( rmiConfig.getVersion() != null )
@@ -132,25 +119,31 @@ public class SunRmiCompiler implements RmiCompiler
         {
             arguments.add( "-iiop" );
 
+            if ( rmiConfig.isPoa() )
+            {
+                arguments.add( "-poa" );
+            }
             if ( rmiConfig.isNoLocalStubs() )
             {
                 arguments.add( "-nolocalstubs" );
             }
         }
+        else
+        {
+            if ( rmiConfig.isPoa() )
+            {
+                throw new RmiCompilerException( "IIOP must be enabled in order to use the POA option");
+            }
+
+        }
 
         if ( rmiConfig.isIdl() )
         {
             arguments.add( "-idl" );
-
             if ( rmiConfig.isNoValueMethods() )
             {
                 arguments.add( "-noValueMethods" );
             }
-        }
-
-        if ( rmiConfig.isPoa() )
-        {
-            arguments.add( "-poa" );
         }
 
         if ( rmiConfig.isKeep() )
@@ -187,6 +180,17 @@ public class SunRmiCompiler implements RmiCompiler
         }
 
         executeMain( rmicMainClass, args );
+    }
+
+    private String buildClasspath( List classpathList )
+    {
+        StringBuffer classpath = new StringBuffer( classpathList.get(0).toString() );
+        for ( int i = 1; i < classpathList.size(); i++ )
+        {
+            classpath.append( File.pathSeparator ).append( classpathList.get( i ) );
+        }
+
+        return classpath.toString();
     }
 
     public void setLog( Log log )

@@ -192,4 +192,32 @@ public class Source implements RmicConfig
     {
         return collection == null || collection.isEmpty();
     }
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append( "Including " ).append( getIncludes() ).append( "; excluding " ).append( getExcludes() );
+        sb.append( "\nwith options: " );
+        appendIfTrue( sb, isIiop(), "-iiop" );
+        appendIfTrue( sb, isIiop() && isNoLocalStubs(), "-noLocalStubs" );
+        appendIfTrue( sb, isIdl(), "-idl" );
+        appendIfTrue( sb, isIdl() && isNoValueMethods(), "-noValueMethods" );
+        appendIfTrue( sb, isKeep(), "-keep" );
+        appendIfTrue( sb, isNowarn(), "-nowarn" );
+        appendIfTrue( sb, isPoa(), "-poa" );
+
+        if (getVersion() != null)
+        {
+            sb.append( "-v" ).append( getVersion() );
+        }
+        return sb.toString();
+    }
+
+    private void appendIfTrue( StringBuffer sb, boolean condition, String option )
+    {
+        if ( condition )
+        {
+            sb.append( option ).append( ' ' );
+        }
+    }
 }
