@@ -206,7 +206,7 @@ public class Source implements RmicConfig
         appendIfTrue( sb, isNowarn(), "-nowarn" );
         appendIfTrue( sb, isPoa(), "-poa" );
 
-        if (getVersion() != null)
+        if ( getVersion() != null )
         {
             sb.append( "-v" ).append( getVersion() );
         }
