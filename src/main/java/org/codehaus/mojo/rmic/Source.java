@@ -118,47 +118,47 @@ public class Source implements RmicConfig
 
     public boolean isIiop()
     {
-        return isSetOrDefault( iiop, mojo.isIiop() );
+        return isSetOrDefault( iiop, mojo != null && mojo.isIiop() );
     }
 
     public boolean isNoLocalStubs()
     {
-        return isSetOrDefault( noLocalStubs, mojo.isNoLocalStubs() );
+        return isSetOrDefault( noLocalStubs, mojo != null && mojo.isNoLocalStubs() );
     }
 
     public boolean isIdl()
     {
-        return isSetOrDefault( idl, mojo.isIdl() );
+        return isSetOrDefault( idl, mojo != null && mojo.isIdl() );
     }
 
     public boolean isNoValueMethods()
     {
-        return isSetOrDefault( noValueMethods, mojo.isNoValueMethods() );
+        return isSetOrDefault( noValueMethods, mojo != null && mojo.isNoValueMethods() );
     }
 
     public boolean isKeep()
     {
-        return isSetOrDefault( keep, mojo.isKeep() );
+        return isSetOrDefault( keep, mojo != null && mojo.isKeep() );
     }
 
     public boolean isNowarn()
     {
-        return isSetOrDefault( nowarn, mojo.isNowarn() );
+        return isSetOrDefault( nowarn, mojo != null && mojo.isNowarn() );
     }
 
     public boolean isPoa()
     {
-        return isSetOrDefault( poa, mojo.isPoa() );
+        return isSetOrDefault( poa, mojo != null && mojo.isPoa() );
     }
 
     public boolean isVerbose()
     {
-        return isSetOrDefault( verbose, mojo.isVerbose() );
+        return isSetOrDefault( verbose, mojo != null && mojo.isVerbose() );
     }
 
     public String getVersion()
     {
-        return version != null ? version : mojo.getVersion();
+        return version != null ? version : (mojo == null ? null : mojo.getVersion());
     }
 
     private static boolean isSetOrDefault( Boolean field, boolean defaultValue )
@@ -174,13 +174,13 @@ public class Source implements RmicConfig
     Set getIncludes()
     {
         return !isEmpty( includes ) ? includes
-                : isEmpty( mojo.includes ) ? createOneElementSet( INCLUDE_ALL ) : mojo.includes;
+                : (mojo == null || isEmpty( mojo.includes )) ? createOneElementSet( INCLUDE_ALL ) : mojo.includes;
     }
 
     Set getExcludes()
     {
         return !isEmpty( excludes ) ? excludes
-                : isEmpty( mojo.excludes ) ? new HashSet() : mojo.excludes;
+                : (mojo == null || isEmpty( mojo.excludes )) ? new HashSet() : mojo.excludes;
     }
 
     private static HashSet createOneElementSet( Object element )
