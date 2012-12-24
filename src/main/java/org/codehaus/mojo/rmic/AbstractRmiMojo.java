@@ -29,7 +29,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -61,21 +60,21 @@ public abstract class AbstractRmiMojo
      *
      * @parameter
      */
-    private List sources;
+    private List<Source> sources;
 
     /**
      * A list of inclusions when searching for classes to compile.
      *
      * @parameter
      */
-    protected Set includes;
+    protected Set<String> includes;
 
     /**
      * A list of exclusions when searching for classes to compile.
      *
      * @parameter
      */
-    protected Set excludes;
+    protected Set<String> excludes;
 
     /**
      * The id of the rmi compiler to use.
@@ -201,7 +200,7 @@ public abstract class AbstractRmiMojo
     /**
      * Get the list of sub-configurations.
      */
-    List getSources()
+    List<Source> getSources()
     {
         return sources;
     }
@@ -211,7 +210,7 @@ public abstract class AbstractRmiMojo
      *
      * @return list of classpath elements
      */
-    public abstract List getProjectClasspathElements();
+    public abstract List<String> getProjectClasspathElements();
 
     /**
      * Get the directory where rmic generated class files are written.
@@ -239,9 +238,9 @@ public abstract class AbstractRmiMojo
             sources = Arrays.asList( new Source[]{new Source()} );
         }
 
-        for ( Iterator i = sources.iterator(); i.hasNext(); )
+        for ( Source source : sources )
         {
-            doExecute( (Source) i.next() );
+            doExecute( source );
         }
     }
 
@@ -254,7 +253,7 @@ public abstract class AbstractRmiMojo
 
         if ( source.isVerbose() )
         {
-            System.out.println( source );
+            getLog().debug( source.toString() );
         }
 
 
@@ -270,7 +269,7 @@ public abstract class AbstractRmiMojo
         try
         {
             // Get the list of classes to compile
-            List remoteClassesToCompile = getRemoteClasses( source );
+            List<String> remoteClassesToCompile = getRemoteClasses( source );
 
             if ( remoteClassesToCompile.size() == 0 )
             {
@@ -292,9 +291,9 @@ public abstract class AbstractRmiMojo
      *
      * @return list of classpath elements
      */
-    public List getRmicClasspathElements()
+    public List<String> getRmicClasspathElements()
     {
-        List classpathElements = getProjectClasspathElements();
+        List<String> classpathElements = getProjectClasspathElements();
 
         if ( !classpathElements.contains( getClassesDirectory().getAbsolutePath() ) )
         {
@@ -310,14 +309,14 @@ public abstract class AbstractRmiMojo
      * @param source
      * @return a list of class names to rmic
      */
-    public List getRemoteClasses( Source source )
+    public List<String> getRemoteClasses( Source source )
     {
-        List remoteClasses = new ArrayList();
+        List<String> remoteClasses = new ArrayList<String>();
 
         try
         {
             // Set up the classloader
-            List classpathList = generateUrlCompileClasspath();
+            List<URL> classpathList = generateUrlCompileClasspath();
             URL[] classpathUrls = new URL[classpathList.size()];
             classpathUrls[0] = getClassesDirectory().toURI().toURL();
             classpathUrls = (URL[]) classpathList.toArray( classpathUrls );
@@ -327,12 +326,14 @@ public abstract class AbstractRmiMojo
 
             SourceInclusionScanner scanner = createScanner( source.getIncludes(), getExcludes( source ) );
             scanner.addSourceMapping( new SuffixMapping( ".class", "_Stub.class" ) );
-            Collection staleRemoteClasses = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
+            
+            @SuppressWarnings( "unchecked" )
+            Collection<File> staleRemoteClasses = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
 
-            for ( Iterator iter = staleRemoteClasses.iterator(); iter.hasNext(); )
+            for ( File file : staleRemoteClasses )
             {
-                String className = getClassName( (File) iter.next() );
-                Class candidateClass = dependencies.loadClass( className );
+                String className = getClassName( file );
+                Class<?> candidateClass = dependencies.loadClass( className );
                 if ( isRemoteRmiClass( candidateClass ) )
                 {
                     remoteClasses.add( className );
@@ -340,9 +341,8 @@ public abstract class AbstractRmiMojo
             }
 
             // Check for classes in a classpath jar
-            for ( Iterator iter = source.getIncludes().iterator(); iter.hasNext(); )
+            for ( String include : source.getIncludes() )
             {
-                String include = (String) iter.next();
                 File includeFile = new File( getClassesDirectory(), include );
                 if ( ( include.indexOf( "*" ) != -1 ) || dependencies.fileExists( includeFile ) )
                 {
@@ -359,7 +359,7 @@ public abstract class AbstractRmiMojo
         return remoteClasses;
     }
 
-    private SourceInclusionScanner createScanner( Set includes, Set excludes )
+    private SourceInclusionScanner createScanner( Set<String> includes, Set<String> excludes )
     {
         return dependencies.createSourceInclusionScanner( staleMillis, includes, excludes );
     }
@@ -370,9 +370,9 @@ public abstract class AbstractRmiMojo
         return fileToClassName( relativeURI.toString() );
     }
 
-    private Set getExcludes( Source source )
+    private Set<String> getExcludes( Source source )
     {
-        Set excludes = source.getExcludes();
+        Set<String> excludes = source.getExcludes();
         excludes.add( STUB_CLASS_PATTERN );
         return excludes;
     }
@@ -383,7 +383,7 @@ public abstract class AbstractRmiMojo
     }
 
     // Check that each class implements java.rmi.Remote, ignore interfaces unless in IIOP mode
-    private boolean isRemoteRmiClass( Class remoteClass )
+    private boolean isRemoteRmiClass( Class<?> remoteClass )
     {
         return java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() || isIiop() );
     }
@@ -393,17 +393,16 @@ public abstract class AbstractRmiMojo
      *
      * @return list of url classpath elements
      */
-    protected List generateUrlCompileClasspath()
+    protected List<URL> generateUrlCompileClasspath()
             throws MojoExecutionException
     {
-        List rmiCompileClasspath = new ArrayList();
+        List<URL> rmiCompileClasspath = new ArrayList<URL>();
         try
         {
             rmiCompileClasspath.add( getClassesDirectory().toURI().toURL() );
-            Iterator iter = getRmicClasspathElements().iterator();
-            while ( iter.hasNext() )
+            for ( String classpathElement : getRmicClasspathElements() )
             {
-                URL pathUrl = new File( (String) iter.next() ).toURI().toURL();
+                URL pathUrl = new File( classpathElement ).toURI().toURL();
                 rmiCompileClasspath.add( pathUrl );
             }
         }
@@ -472,9 +471,9 @@ public abstract class AbstractRmiMojo
     {
         boolean fileExists( File includeFile );
 
-        SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set includes, Set excludes );
+        SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set<String> includes, Set<String> excludes );
 
-        Class loadClass( String className ) throws ClassNotFoundException;
+        Class<?> loadClass( String className ) throws ClassNotFoundException;
 
         void defineUrlClassLoader( URL[] classpathUrls );
     }
@@ -486,7 +485,7 @@ public abstract class AbstractRmiMojo
     {
         private static URLClassLoader loader;
 
-        public Class loadClass( String className ) throws ClassNotFoundException
+        public Class<?> loadClass( String className ) throws ClassNotFoundException
         {
             return loader.loadClass( className );
         }
@@ -501,7 +500,7 @@ public abstract class AbstractRmiMojo
             return includeFile.exists();
         }
 
-        public SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set includes, Set excludes )
+        public SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set<String> includes, Set<String> excludes )
         {
             return new StaleSourceScanner( staleMillis, includes, excludes );
         }

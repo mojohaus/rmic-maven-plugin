@@ -41,14 +41,14 @@ public class Source implements RmicConfig
      *
      * @parameter
      */
-    protected Set includes;
+    protected Set<String> includes;
 
     /**
      * A list of exclusions when searching for classes to compile.
      *
      * @parameter
      */
-    protected Set excludes;
+    protected Set<String> excludes;
 
     /**
      * The version of the rmi protocol to which the stubs should be compiled. Valid values include 1.1, 1.2, compat. See
@@ -171,16 +171,16 @@ public class Source implements RmicConfig
         this.mojo = mojo;
     }
 
-    Set getIncludes()
+    Set<String> getIncludes()
     {
         return !isEmpty( includes ) ? includes
                 : (mojo == null || isEmpty( mojo.includes )) ? createOneElementSet( INCLUDE_ALL ) : mojo.includes;
     }
 
-    Set getExcludes()
+    Set<String> getExcludes()
     {
         return !isEmpty( excludes ) ? excludes
-                : (mojo == null || isEmpty( mojo.excludes )) ? new HashSet() : mojo.excludes;
+                : (mojo == null || isEmpty( mojo.excludes )) ? new HashSet<String>() : mojo.excludes;
     }
 
     private static HashSet createOneElementSet( Object element )
