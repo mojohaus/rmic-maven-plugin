@@ -41,11 +41,12 @@
     <inceptionYear>2006</inceptionYear>
 
     <prerequisites>
-        <maven>2.0</maven>
+        <maven>${mavenVersion}</maven>
     </prerequisites>
 
     <properties>
         <mavenVersion>2.0.6</mavenVersion>
+        <mojo.java.target>1.5</mojo.java.target>
     </properties>
 
     <issueManagement>
@@ -148,7 +149,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.2</version>
                 <configuration>
                     <headerLocation>License.txt</headerLocation>
                 </configuration>
@@ -170,12 +170,9 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>1.8</version>
                         <configuration>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <pomIncludes>
-                                <pomInclude>*/pom.xml</pomInclude>
-                            </pomIncludes>
                             <postBuildHookScript>verify</postBuildHookScript>
                             <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                             <showErrors>true</showErrors>
