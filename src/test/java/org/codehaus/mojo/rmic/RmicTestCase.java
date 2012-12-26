@@ -1,8 +1,6 @@
 package org.codehaus.mojo.rmic;
 
 import java.io.File;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.rmi.Remote;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
@@ -281,7 +278,7 @@ public class RmicTestCase extends AbstractMojoTestCase
         if ( sources == null )
         {
             sources = new ArrayList();
-            setPrivateFieldValue( mojo, "sources", sources );
+            setVariableValueToObject( mojo, "sources", sources );
         }
         Source source = new Source();
         sources.add( source );
@@ -290,92 +287,70 @@ public class RmicTestCase extends AbstractMojoTestCase
 
     private void enableIiop( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "iiop", Boolean.TRUE );
+        setVariableValueToObject( config, "iiop", Boolean.TRUE );
     }
 
     private void enableNoLocalStubs( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "noLocalStubs", Boolean.TRUE );
+        setVariableValueToObject( config, "noLocalStubs", Boolean.TRUE );
     }
 
     private void enableIdl( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "idl", Boolean.TRUE );
+        setVariableValueToObject( config, "idl", Boolean.TRUE );
     }
 
     private void enableNoValueMethods( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "noValueMethods", Boolean.TRUE );
+        setVariableValueToObject( config, "noValueMethods", Boolean.TRUE );
     }
 
     private void enableKeep( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "keep", Boolean.TRUE );
+        setVariableValueToObject( config, "keep", Boolean.TRUE );
     }
 
     private void enableNoWarn( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "nowarn", Boolean.TRUE );
+        setVariableValueToObject( config, "nowarn", Boolean.TRUE );
     }
 
     private void enablePoa( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "poa", Boolean.TRUE );
+        setVariableValueToObject( config, "poa", Boolean.TRUE );
     }
 
     private void enableVerbose( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "verbose", Boolean.TRUE );
+        setVariableValueToObject( config, "verbose", Boolean.TRUE );
     }
 
     private void setVersion( RmicConfig config, String version ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( config, "version", version );
+        setVariableValueToObject( config, "version", version );
     }
 
     private void setSourceDirectory( File directory ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( mojo, "classesDirectory", directory );
+        setVariableValueToObject( mojo, "classesDirectory", directory );
     }
 
     private void defineIncludes( RmicConfig config, Set includes ) throws NoSuchFieldException,
                                                                           IllegalAccessException
     {
-        setPrivateFieldValue( config, "includes", includes );
+        setVariableValueToObject( config, "includes", includes );
     }
 
     private void setTargetDirectory( File directory ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( mojo, "outputDirectory", directory );
+        setVariableValueToObject( mojo, "outputDirectory", directory );
     }
 
     private void setCompileClasspathElements( List elements ) throws NoSuchFieldException, IllegalAccessException
     {
-        setPrivateFieldValue( mojo, "projectCompileClasspathElements", elements );
+        setVariableValueToObject( mojo, "projectCompileClasspathElements", elements );
     }
 
-    protected void setPrivateFieldValue( Object obj, String fieldName, Object value ) throws NoSuchFieldException, IllegalAccessException
-    {
-        Class theClass = obj.getClass();
-        setPrivateFieldValue( obj, theClass, fieldName, value );
-    }
-
-    private void setPrivateFieldValue( Object obj, Class theClass, String fieldName, Object value ) throws NoSuchFieldException, IllegalAccessException
-    {
-        try
-        {
-            Field field = theClass.getDeclaredField( fieldName );
-            field.setAccessible( true );
-            field.set( obj, value );
-        }
-        catch ( NoSuchFieldException e )
-        {
-            if ( theClass.equals( Object.class ) )
-                throw e;
-            else
-                setPrivateFieldValue( obj, theClass.getSuperclass(), fieldName, value );
-        }
-    }
 
     static class Invocation
     {
