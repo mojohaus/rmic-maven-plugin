@@ -16,11 +16,14 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.codehaus.plexus.compiler.CompilerConfiguration;
+import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
 
-public class RmicTestCase extends TestCase
+public class RmicTestCase extends AbstractMojoTestCase
 {
     private static File DEFAULT_PROJECT_OUTPUT_DIRECTORY = new File( "target/classes" ).getAbsoluteFile();
     private static File DEFAULT_RMIC_OUTPUT_DIRECTORY = new File( "target/rmi-classes" ).getAbsoluteFile();
@@ -41,14 +44,14 @@ public class RmicTestCase extends TestCase
 
     private static List invocations = new ArrayList();
 
-    private final TestClassloaderFacade classloaderFacade = new TestClassloaderFacade();
     private final TestDependencies dependencies = new TestDependencies();
     private final RmicMojo mojo = new RmicMojo( dependencies );
     private final ScannableFileSystem fileSystem = new ScannableFileSystem();
 
-    public void setUp() throws NoSuchFieldException, IllegalAccessException
+    public void setUp() throws Exception
     {
-        SunRmiCompiler.setClassLoaderFacade( classloaderFacade );
+        super.setUp();
+        setVariableValueToObject( mojo, "rmiCompiler", new TestCompiler() );
         setSourceDirectory( DEFAULT_PROJECT_OUTPUT_DIRECTORY );
         setTargetDirectory( DEFAULT_RMIC_OUTPUT_DIRECTORY );
         setCompileClasspathElements( EMPTY_LIST );
@@ -495,14 +498,11 @@ public class RmicTestCase extends TestCase
         }
     }
 
-    static class TestCompiler
+    static class TestCompiler extends SunRmiCompiler
     {
-        public TestCompiler( OutputStream outputStream, String mode )
-        {
-
-        }
-
-        public void compile( String[] args )
+        @Override
+        void compileInProcess( String[] args, CompilerConfiguration config )
+            throws CompilerException
         {
             invocations.add( new Invocation( args ) );
         }
@@ -566,29 +566,6 @@ public class RmicTestCase extends TestCase
         public void defineUrlClassLoader( URL[] classpathUrls )
         {
             this.classpathUrls = classpathUrls;
-        }
-    }
-
-    class TestClassloaderFacade implements SunRmiCompiler.ClassLoaderFacade
-    {
-        private URL[] urls = new URL[0];
-
-        public Class loadClass( String classname ) throws ClassNotFoundException
-        {
-            return TestCompiler.class;
-        }
-
-        public void prependUrls( URL[] classpathUrls )
-        {
-            URL[] newUrls = new URL[urls.length + classpathUrls.length];
-            System.arraycopy( urls, 0, newUrls, classpathUrls.length, urls.length );
-            System.arraycopy( classpathUrls, 0, newUrls, 0, classpathUrls.length );
-            urls = newUrls;
-        }
-
-        public URL[] getUrls()
-        {
-            return urls;
         }
     }
 

@@ -83,6 +83,9 @@ public abstract class AbstractRmiMojo
      */
     protected String compilerId;
 
+    // @todo change this to a Map<String, RmiCompiler>, so you can choose one by settings compilerId
+    private RmiCompiler rmiCompiler = new SunRmiCompiler();
+
     /**
      * The version of the rmi protocol to which the stubs should be compiled. Valid values include 1.1, 1.2, compat. See
      * the rmic documentation for more information. If nothing is specified the underlying rmi compiler will
@@ -248,7 +251,6 @@ public abstract class AbstractRmiMojo
     {
         source.setRmiMojo( this );
 
-        RmiCompiler rmiCompiler = new SunRmiCompiler();
         rmiCompiler.setLog( getLog() );
 
         if ( source.isVerbose() )
