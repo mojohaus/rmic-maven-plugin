@@ -24,6 +24,7 @@ package org.codehaus.mojo.rmic;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,6 @@ public class Source
 {
 
     private static final String INCLUDE_ALL = "**/*";
-    private AbstractRmiMojo mojo;
 
     /**
      * A list of inclusions when searching for classes to compile.
@@ -118,47 +118,47 @@ public class Source
 
     public boolean isIiop()
     {
-        return isSetOrDefault( iiop, mojo != null && mojo.isIiop() );
+        return isSetOrDefault( iiop, false );
     }
 
     public boolean isNoLocalStubs()
     {
-        return isSetOrDefault( noLocalStubs, mojo != null && mojo.isNoLocalStubs() );
+        return isSetOrDefault( noLocalStubs, false );
     }
 
     public boolean isIdl()
     {
-        return isSetOrDefault( idl, mojo != null && mojo.isIdl() );
+        return isSetOrDefault( idl, false );
     }
 
     public boolean isNoValueMethods()
     {
-        return isSetOrDefault( noValueMethods, mojo != null && mojo.isNoValueMethods() );
+        return isSetOrDefault( noValueMethods, false );
     }
 
     public boolean isKeep()
     {
-        return isSetOrDefault( keep, mojo != null && mojo.isKeep() );
+        return isSetOrDefault( keep, false );
     }
 
     public boolean isNowarn()
     {
-        return isSetOrDefault( nowarn, mojo != null && mojo.isNowarn() );
+        return isSetOrDefault( nowarn, false );
     }
 
     public boolean isPoa()
     {
-        return isSetOrDefault( poa, mojo != null && mojo.isPoa() );
+        return isSetOrDefault( poa, false );
     }
 
     public boolean isVerbose()
     {
-        return isSetOrDefault( verbose, mojo != null && mojo.isVerbose() );
+        return isSetOrDefault( verbose, false );
     }
 
     public String getVersion()
     {
-        return version != null ? version : (mojo == null ? null : mojo.getVersion());
+        return version;
     }
 
     private static boolean isSetOrDefault( Boolean field, boolean defaultValue )
@@ -166,26 +166,14 @@ public class Source
         return field != null ? field.booleanValue() : defaultValue;
     }
 
-    void setRmiMojo( AbstractRmiMojo mojo )
-    {
-        this.mojo = mojo;
-    }
-
     Set<String> getIncludes()
     {
-        return !isEmpty( includes ) ? includes
-                : (mojo == null || isEmpty( mojo.includes )) ? createOneElementSet( INCLUDE_ALL ) : mojo.includes;
+        return !isEmpty( includes ) ? includes : Collections.singleton( INCLUDE_ALL );
     }
 
     Set<String> getExcludes()
     {
-        return !isEmpty( excludes ) ? excludes
-                : (mojo == null || isEmpty( mojo.excludes )) ? new HashSet<String>() : mojo.excludes;
-    }
-
-    private static HashSet createOneElementSet( Object element )
-    {
-        return new HashSet( Arrays.asList( new Object[]{element} ) );
+        return !isEmpty( excludes ) ? excludes :new HashSet<String>();
     }
 
     private static boolean isEmpty( Collection collection )
@@ -219,16 +207,6 @@ public class Source
         {
             sb.append( option ).append( ' ' );
         }
-    }
-
-    public AbstractRmiMojo getMojo()
-    {
-        return mojo;
-    }
-
-    public void setMojo( AbstractRmiMojo mojo )
-    {
-        this.mojo = mojo;
     }
 
     public void setIncludes( Set<String> includes )

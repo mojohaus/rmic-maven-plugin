@@ -27,7 +27,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -256,8 +255,6 @@ public abstract class AbstractRmiMojo
 
     private void doExecute( Source source ) throws MojoExecutionException
     {
-        source.setRmiMojo( this );
-
         rmiCompiler.setLog( getLog() );
 
         if ( source.isVerbose() )
