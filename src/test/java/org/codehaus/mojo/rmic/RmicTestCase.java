@@ -130,7 +130,7 @@ public class RmicTestCase extends AbstractMojoTestCase
 
         Source source = addNewSource();
         mojo.setIiop( true );
-        enableNoLocalStubs( source );
+        source.setNoLocalStubs( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -144,8 +144,8 @@ public class RmicTestCase extends AbstractMojoTestCase
         defineDefaultScan();
 
         Source source = addNewSource();
-        enableIdl( source );
-        enableNoValueMethods( source );
+        source.setIdl( true );
+        source.setNoValueMethods( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -159,8 +159,8 @@ public class RmicTestCase extends AbstractMojoTestCase
         defineDefaultScan();
 
         Source source = addNewSource();
-        enableKeep( source );
-        enableNoWarn( source );
+        source.setKeep( true );
+        source.setNowarn( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -235,7 +235,7 @@ public class RmicTestCase extends AbstractMojoTestCase
 
         Source source2 = addNewSource();
         defineIncludes( source2, INCLUDES_B );
-        enablePoa( source2 );
+        source2.setPoa( true );
         mojo.setIiop( true );
         mojo.execute();
 
@@ -288,57 +288,12 @@ public class RmicTestCase extends AbstractMojoTestCase
         return source;
     }
 
-    private void enableIiop( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "iiop", Boolean.TRUE );
-    }
-
-    private void enableNoLocalStubs( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "noLocalStubs", Boolean.TRUE );
-    }
-
-    private void enableIdl( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "idl", Boolean.TRUE );
-    }
-
-    private void enableNoValueMethods( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "noValueMethods", Boolean.TRUE );
-    }
-
-    private void enableKeep( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "keep", Boolean.TRUE );
-    }
-
-    private void enableNoWarn( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "nowarn", Boolean.TRUE );
-    }
-
-    private void enablePoa( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "poa", Boolean.TRUE );
-    }
-
-    private void enableVerbose( RmicConfig config ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "verbose", Boolean.TRUE );
-    }
-
-    private void setVersion( RmicConfig config, String version ) throws NoSuchFieldException, IllegalAccessException
-    {
-        setVariableValueToObject( config, "version", version );
-    }
-
     private void setSourceDirectory( File directory ) throws NoSuchFieldException, IllegalAccessException
     {
         setVariableValueToObject( mojo, "classesDirectory", directory );
     }
 
-    private void defineIncludes( RmicConfig config, Set includes ) throws NoSuchFieldException,
+    private void defineIncludes( Source config, Set includes ) throws NoSuchFieldException,
                                                                           IllegalAccessException
     {
         setVariableValueToObject( config, "includes", includes );

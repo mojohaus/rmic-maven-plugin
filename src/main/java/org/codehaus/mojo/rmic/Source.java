@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Represents a group of class files to be processed by rmic, along with the desired options.
  */
-public class Source implements RmicConfig
+public class Source
 {
 
     private static final String INCLUDE_ALL = "**/*";
