@@ -98,7 +98,7 @@ public class RmicTestCase extends AbstractMojoTestCase
     {
         defineDefaultScan();
 
-        enableIiop( mojo );
+        mojo.setIiop( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -113,8 +113,8 @@ public class RmicTestCase extends AbstractMojoTestCase
     {
         defineDefaultScan();
 
-        enableIiop( mojo );
-        enableNoLocalStubs( mojo );
+        mojo.setIiop( true );
+        mojo.setNoLocalStubs( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -123,12 +123,13 @@ public class RmicTestCase extends AbstractMojoTestCase
         invocation.assertArgumentFound( "-nolocalstubs" );
     }
 
-    public void test_withSourcesSpecified_combineOptions() throws Exception
+    // this is an invalid test, since it combines mojo-options and sources
+    public void IGNORE_test_withSourcesSpecified_combineOptions() throws Exception
     {
         defineDefaultScan();
 
         Source source = addNewSource();
-        enableIiop( mojo );
+        mojo.setIiop( true );
         enableNoLocalStubs( source );
         mojo.execute();
 
@@ -172,9 +173,10 @@ public class RmicTestCase extends AbstractMojoTestCase
     {
         defineDefaultScan();
 
-        Source source = addNewSource();
-        enableVerbose( source );
-        setVersion( mojo, "1.2" );
+//        Source source = addNewSource();
+//        enableVerbose( source );
+        mojo.setVerbose( true );
+        mojo.setVersion( "1.2" );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -187,7 +189,7 @@ public class RmicTestCase extends AbstractMojoTestCase
     {
         defineDefaultScan();
 
-        enablePoa( mojo );
+        mojo.setPoa( true );
         try
         {
             mojo.execute();
@@ -203,8 +205,8 @@ public class RmicTestCase extends AbstractMojoTestCase
     {
         defineDefaultScan();
 
-        enableIiop( mojo );
-        enablePoa( mojo );
+        mojo.setIiop( true );
+        mojo.setPoa( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 1, invocations.size() );
@@ -212,7 +214,8 @@ public class RmicTestCase extends AbstractMojoTestCase
         invocation.assertArgumentFound( "-poa" );
     }
 
-    public void test_withTwoSourcesInvokeTwice() throws Exception
+    // this is an invalid test, since it combines mojo-options and sources
+    public void IGNORE_test_withTwoSourcesInvokeTwice() throws Exception
     {
         Set scanResults1 = new HashSet();
         scanResults1.add( defineNonRemoteClass( "a.b.NonRmicClass" ) );
@@ -233,7 +236,7 @@ public class RmicTestCase extends AbstractMojoTestCase
         Source source2 = addNewSource();
         defineIncludes( source2, INCLUDES_B );
         enablePoa( source2 );
-        enableIiop( mojo );
+        mojo.setIiop( true );
         mojo.execute();
 
         assertEquals( "Number of invocations", 2, invocations.size() );

@@ -220,4 +220,72 @@ public class Source implements RmicConfig
             sb.append( option ).append( ' ' );
         }
     }
+
+    public AbstractRmiMojo getMojo()
+    {
+        return mojo;
+    }
+
+    public void setMojo( AbstractRmiMojo mojo )
+    {
+        this.mojo = mojo;
+    }
+
+    public void setIncludes( Set<String> includes )
+    {
+        this.includes = includes;
+    }
+
+    public void setExcludes( Set<String> excludes )
+    {
+        this.excludes = excludes;
+    }
+
+    public void setVersion( String version )
+    {
+        this.version = version;
+    }
+
+    public void setIiop( Boolean iiop )
+    {
+        this.iiop = iiop;
+    }
+
+    public void setNoLocalStubs( Boolean noLocalStubs )
+    {
+        this.noLocalStubs = noLocalStubs;
+    }
+
+    public void setIdl( Boolean idl )
+    {
+        this.idl = idl;
+    }
+
+    public void setNoValueMethods( Boolean noValueMethods )
+    {
+        this.noValueMethods = noValueMethods;
+    }
+
+    public void setKeep( Boolean keep )
+    {
+        this.keep = keep;
+    }
+
+    public void setNowarn( Boolean nowarn )
+    {
+        this.nowarn = nowarn;
+    }
+
+    public void setPoa( Boolean poa )
+    {
+        this.poa = poa;
+    }
+
+    public void setVerbose( Boolean verbose )
+    {
+        this.verbose = verbose;
+    }
+
+    
+    
 }

@@ -29,6 +29,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,13 +50,14 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public abstract class AbstractRmiMojo
         extends AbstractMojo
-        implements RmicConfig
 {
     private static final String STUB_CLASS_PATTERN = "**/*_Stub.class";
     // ----------------------------------------------------------------------
     // Configurable parameters
     // ----------------------------------------------------------------------
 
+    private Source source;
+    
     /**
      * A <code>List</code> of <code>Source</code> configurations to compile.
      *
@@ -237,9 +239,13 @@ public abstract class AbstractRmiMojo
      */
     public void execute() throws MojoExecutionException
     {
+        if( source != null && sources != null)
+        {
+            throw new MojoExecutionException( "Either use sources or only the sourceflags, don't combine them." );
+        }
         if ( sources == null || sources.isEmpty() )
         {
-            sources = Arrays.asList( new Source[]{new Source()} );
+            sources = Collections.singletonList( getSource() );
         }
 
         for ( Source source : sources )
@@ -354,7 +360,7 @@ public abstract class AbstractRmiMojo
                 URI relativeURI = getClassesDirectory().toURI().relativize( file.toURI() );
                 String className = fileToClassName( relativeURI.toString() );
                 Class<?> candidateClass = dependencies.loadClass( className );
-                if ( isRemoteRmiClass( candidateClass ) )
+                if ( isRemoteRmiClass( candidateClass, source.isIiop() ) )
                 {
                     // file is absolute, we need relative files
                     remoteClasses.add( new File( relativeURI.toString() ) );
@@ -398,9 +404,9 @@ public abstract class AbstractRmiMojo
     }
 
     // Check that each class implements java.rmi.Remote, ignore interfaces unless in IIOP mode
-    private boolean isRemoteRmiClass( Class<?> remoteClass )
+    private boolean isRemoteRmiClass( Class<?> remoteClass, boolean isIiop )
     {
-        return java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() || isIiop() );
+        return java.rmi.Remote.class.isAssignableFrom( remoteClass ) && ( !remoteClass.isInterface() || isIiop );
     }
 
     /**
@@ -479,6 +485,72 @@ public abstract class AbstractRmiMojo
         return noValueMethods;
     }
 
+    public Source getSource()
+    {
+        if( source == null )
+        {
+            source = new Source();
+        }
+        return source;
+    }
+    
+    // Plexus trick: if there's a setter for a @parameter, use the setter
+    public void setIncludes( Set<String> includes )
+    {
+        getSource().setIncludes( includes );
+    }
+
+    public void setExcludes( Set<String> excludes )
+    {
+        getSource().setExcludes( excludes );
+    }
+
+    public void setVersion( String version )
+    {
+        getSource().setVersion( version );
+    }
+
+    public void setIiop( Boolean iiop )
+    {
+        getSource().setIiop( iiop );
+    }
+
+    public void setNoLocalStubs( Boolean noLocalStubs )
+    {
+        getSource().setNoLocalStubs( noLocalStubs );
+    }
+
+    public void setIdl( Boolean idl )
+    {
+        getSource().setIdl( idl );
+    }
+
+    public void setNoValueMethods( Boolean noValueMethods )
+    {
+        getSource().setNoValueMethods( noValueMethods );
+    }
+
+    public void setKeep( Boolean keep )
+    {
+        getSource().setKeep( keep );
+    }
+
+    public void setNowarn( Boolean nowarn )
+    {
+        getSource().setNowarn( nowarn );
+    }
+
+    public void setPoa( Boolean poa )
+    {
+        getSource().setPoa( poa );
+    }
+
+    public void setVerbose( Boolean verbose )
+    {
+        getSource().setVerbose( verbose );
+    }
+    
+    
     /**
      * An interface for dependencies on the file system and related mojo base classes.
      */
