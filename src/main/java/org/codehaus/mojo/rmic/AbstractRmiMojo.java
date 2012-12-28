@@ -29,6 +29,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -271,7 +272,7 @@ public abstract class AbstractRmiMojo
         try
         {
             // Get the list of classes to compile
-            List<String> remoteClassesToCompile = getRemoteClasses( source );
+            Set<File> remoteClassesToCompile = getRemoteClasses( source );
 
             if ( remoteClassesToCompile.size() == 0 )
             {
@@ -280,13 +281,30 @@ public abstract class AbstractRmiMojo
             }
 
             getLog().info( "Compiling " + remoteClassesToCompile.size() + " remote classes" );
-            rmiCompiler.execute( this, source, remoteClassesToCompile );
+            
+            RmiCompilerConfiguration config = new RmiCompilerConfiguration();
+            config.setClasspathEntries( getRmicClasspathElements() );
+            config.addSourceLocation( getClassesDirectory().getPath() );
+            config.setSourceFiles( remoteClassesToCompile );
+            config.setIdl( source.isIdl() );
+            config.setIiop( source.isIiop() );
+            config.setKeep( source.isKeep() );
+            config.setNoLocalStubs( source.isNoLocalStubs() );
+            config.setNoValueMethods( source.isNoValueMethods() );
+            config.setNowarn( source.isNowarn() );
+            config.setOutputLocation( getOutputDirectory().getAbsolutePath() );
+            config.setPoa( source.isPoa() );
+            config.setVerbose( source.isVerbose() );
+            config.setVersion( source.getVersion() );
+            
+            rmiCompiler.execute( config );
         }
         catch ( RmiCompilerException e )
         {
             throw new MojoExecutionException( "Error while executing the RMI compiler.", e );
         }
     }
+    
 
     /**
      * Get the list of elements to add to the classpath of rmic
@@ -311,9 +329,9 @@ public abstract class AbstractRmiMojo
      * @param source
      * @return a list of class names to rmic
      */
-    public List<String> getRemoteClasses( Source source )
+    public Set<File> getRemoteClasses( Source source )
     {
-        List<String> remoteClasses = new ArrayList<String>();
+        Set<File> remoteClasses = new HashSet<File>();
 
         try
         {
@@ -329,16 +347,17 @@ public abstract class AbstractRmiMojo
             SourceInclusionScanner scanner = createScanner( source.getIncludes(), getExcludes( source ) );
             scanner.addSourceMapping( new SuffixMapping( ".class", "_Stub.class" ) );
             
-            @SuppressWarnings( "unchecked" )
             Collection<File> staleRemoteClasses = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
 
             for ( File file : staleRemoteClasses )
             {
-                String className = getClassName( file );
+                URI relativeURI = getClassesDirectory().toURI().relativize( file.toURI() );
+                String className = fileToClassName( relativeURI.toString() );
                 Class<?> candidateClass = dependencies.loadClass( className );
                 if ( isRemoteRmiClass( candidateClass ) )
                 {
-                    remoteClasses.add( className );
+                    // file is absolute, we need relative files
+                    remoteClasses.add( new File( relativeURI.toString() ) );
                 }
             }
 
@@ -351,7 +370,7 @@ public abstract class AbstractRmiMojo
                     continue;
                 }
                 // We have found a class that is not in the classes dir.
-                remoteClasses.add( fileToClassName( include ) );
+                remoteClasses.add( includeFile );
             }
         }
         catch ( Exception e )
@@ -364,12 +383,6 @@ public abstract class AbstractRmiMojo
     private SourceInclusionScanner createScanner( Set<String> includes, Set<String> excludes )
     {
         return dependencies.createSourceInclusionScanner( staleMillis, includes, excludes );
-    }
-
-    private String getClassName( File remoteClassFile )
-    {
-        URI relativeURI = getClassesDirectory().toURI().relativize( remoteClassFile.toURI() );
-        return fileToClassName( relativeURI.toString() );
     }
 
     private Set<String> getExcludes( Source source )

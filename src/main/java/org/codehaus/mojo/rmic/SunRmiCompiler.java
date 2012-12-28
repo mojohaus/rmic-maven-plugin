@@ -31,12 +31,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerException;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -62,7 +62,7 @@ public class SunRmiCompiler
      * @param classesToCompile The list of classes to rmi compile
      * @throws RmiCompilerException if there is a problem during compile
      */
-    public void execute( AbstractRmiMojo mojo, RmicConfig rmiConfig, List classesToCompile )
+    public void execute( RmiCompilerConfiguration rmiConfig )
         throws RmiCompilerException
     {
         // ----------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class SunRmiCompiler
 
         List<String> arguments = new ArrayList<String>();
 
-        List classpathList = mojo.getRmicClasspathElements();
+        List<String> classpathList = rmiConfig.getClasspathEntries();
         if ( classpathList.size() > 0 )
         {
             arguments.add( "-classpath" );
@@ -79,7 +79,7 @@ public class SunRmiCompiler
         }
 
         arguments.add( "-d" );
-        arguments.add( mojo.getOutputDirectory().getAbsolutePath() );
+        arguments.add( rmiConfig.getOutputLocation() );
 
         if ( rmiConfig.getVersion() != null )
         {
@@ -131,14 +131,12 @@ public class SunRmiCompiler
             arguments.add( "-nowarn" );
         }
 
-        for ( Iterator it = classesToCompile.iterator(); it.hasNext(); )
+        for ( File remoteClass : rmiConfig.getSourceFiles() )
         {
-            String remoteClass = (String) it.next();
-
-            arguments.add( remoteClass );
+            arguments.add( fileToClassName( remoteClass.getPath() ) );
         }
 
-        String[] args = (String[]) arguments.toArray( new String[arguments.size()] );
+        String[] args = arguments.toArray( new String[arguments.size()] );
 
         if ( getLog().isDebugEnabled() )
         {
@@ -283,5 +281,10 @@ public class SunRmiCompiler
                 + " class is required)." + EOL + "In most cases you can change the location of your Java" + EOL
                 + "installation by setting the JAVA_HOME environment variable.", ex );
         }
+    }
+    
+    private static String fileToClassName( String classFileName )
+    {
+        return StringUtils.replace( StringUtils.replace( classFileName, ".class", "" ), File.separator, "." );
     }
 }

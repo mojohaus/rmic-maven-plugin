@@ -40,7 +40,7 @@ public interface RmiCompiler
      * @param classesToCompile List of class names to compile
      * @throws RmiCompilerException If there is a problem during compilation
      */
-    void execute( AbstractRmiMojo mojo, RmicConfig rmiConfig, List classesToCompile )
+    void execute( RmiCompilerConfiguration rmiConfig )
             throws RmiCompilerException;
 
     /**
