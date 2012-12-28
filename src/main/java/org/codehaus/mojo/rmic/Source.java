@@ -22,7 +22,6 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,15 +37,11 @@ public class Source
 
     /**
      * A list of inclusions when searching for classes to compile.
-     *
-     * @parameter
      */
     protected Set<String> includes;
 
     /**
      * A list of exclusions when searching for classes to compile.
-     *
-     * @parameter
      */
     protected Set<String> excludes;
 
@@ -54,64 +49,46 @@ public class Source
      * The version of the rmi protocol to which the stubs should be compiled. Valid values include 1.1, 1.2, compat. See
      * the rmic documentation for more information. If nothing is specified the underlying rmi compiler will
      * choose the default value.  For example, in sun jdk 1.5 the default is 1.2.
-     *
-     * @parameter
      */
     private String version;
 
     /**
      * Create stubs for IIOP.
-     *
-     * @parameter
      */
     private Boolean iiop;
 
     /**
      * Do not create stubs optimized for same process.
-     *
-     * @parameter
      */
     private Boolean noLocalStubs;
 
     /**
      * Create IDL.
-     *
-     * @parameter default-value="false"
      */
     private Boolean idl;
 
     /**
      * Do not generate methods for valuetypes.
-     *
-     * @parameter
      */
     private Boolean noValueMethods;
 
     /**
      * Do not delete intermediate generated source files.
-     *
-     * @parameter
      */
     private Boolean keep;
 
     /**
      * Turn off rmic warnings.
-     *
-     * @parameter
      */
     private Boolean nowarn;
 
     /**
      * Enable poa generation.
-     *
-     * @parameter
      */
     private Boolean poa;
 
     /**
      * Enable verbose output.
-     *
-     * @parameter
      */
     private Boolean verbose;
 
