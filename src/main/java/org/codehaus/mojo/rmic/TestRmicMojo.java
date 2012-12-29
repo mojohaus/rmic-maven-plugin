@@ -25,16 +25,19 @@ package org.codehaus.mojo.rmic;
 import java.io.File;
 import java.util.List;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
  * By default runs against files in the test-classes directory.
  * 
- * @goal test-rmic
- * @phase process-test-classes
- * @requiresDependencyResolution test
  * @author pgier
  * @version $Id$
  */
+@Mojo( name="test-rmic", defaultPhase=LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution=ResolutionScope.TEST )
 public class TestRmicMojo
     extends AbstractRmiMojo
 {
@@ -43,25 +46,23 @@ public class TestRmicMojo
      * need to be included in the project test artifact, this parameter can be set 
      * to ${project.build.testOutputDirectory}.
      * 
-     * @parameter default-value="${project.build.directory}/rmi-test-classes"
      * @since 1.0
      */
+    @Parameter( defaultValue = "${project.build.directory}/rmi-test-classes" )
     private File testOutputDirectory;
 
     /**
      * Directory tree where the compiled Remote classes are located.
      * 
-     * @parameter default-value="${project.build.testOutputDirectory}"
      * @since 1.0
      */
+    @Parameter( defaultValue = "${project.build.testOutputDirectory}" )
     private File testClassesDirectory;
 
     /**
      * Compile classpath of the maven project.
-     * 
-     * @parameter expression="${project.testClasspathElements}"
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.testClasspathElements}", readonly = true )
     protected List projectTestClasspathElements;
 
     /**

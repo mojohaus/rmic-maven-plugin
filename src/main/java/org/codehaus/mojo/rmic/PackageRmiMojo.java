@@ -27,6 +27,10 @@ import java.io.IOException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -35,70 +39,59 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 /**
  * Creates a jar containing the rmic generated classes.
  * 
- * @goal package
- * @phase package
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
+@Mojo( name="package", defaultPhase=LifecyclePhase.PACKAGE )
 public class PackageRmiMojo
     extends AbstractMojo
 {
     /**
      * The directory to which the generated jar should be written.
-     * 
-     * @parameter default-value="${project.build.directory}"
      */
+    @Parameter ( defaultValue="${project.build.directory}" )
     private File target;
 
     /**
      * The base name of the generated jar.  This name does not include
      * the classifier or the extension.
-     * 
-     * @parameter default-value="${project.build.finalName}"
      */
+    @Parameter ( defaultValue="${project.build.finalName}" )
     private String finalName;
 
-    /**
-     * @parameter default-value="${project}"
-     * @readonly
-     */
+    @Component
     private MavenProject project;
 
     /**
      * Classifier to append to the jar.
-     * 
-     * @parameter default-value="client"
      */
+    @Parameter ( defaultValue="client" )
     private String classifier;
 
     /**
      * This directory contains the output of rmic (where the Stub classes are located). This is not the directory where
      * the jar file will be written.
-     * 
-     * @parameter default-value="${project.build.directory}/rmi-classes"
      */
+    @Parameter ( defaultValue = "${project.build.directory}/rmi-classes" )
     private File outputDirectory;
 
     /**
      * The file patterns to include in the jar. By default, all classes ending with _Stub.class
      * will be included.
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] includes;
 
     /**
      * The file patterns to exclude from the jar.
-     * 
-     * @parameter
      */
+    @Parameter
     private String[] excludes;
 
     /**
      * The maven project helper.
-     * 
-     * @component
      */
+    @Component
     private MavenProjectHelper projectHelper;
 
     /**

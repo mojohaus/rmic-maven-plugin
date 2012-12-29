@@ -25,15 +25,18 @@ package org.codehaus.mojo.rmic;
 import java.io.File;
 import java.util.List;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
  *
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
- * @goal rmic
- * @phase process-classes
- * @requiresDependencyResolution compile
  */
+@Mojo( name = "rmic", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE )
 public class RmicMojo
         extends AbstractRmiMojo
 {
@@ -41,24 +44,20 @@ public class RmicMojo
      * Specifies where to place rmic generated class files.  If the generated files
      * need to be included in the main project artifact, this parameter can be set
      * to ${project.build.outputDirectory}.
-     *
-     * @parameter default-value="${project.build.directory}/rmi-classes"
      */
+    @Parameter ( defaultValue="${project.build.directory}/rmi-classes" )
     private File outputDirectory;
 
     /**
      * Directory tree where the compiled Remote classes are located.
-     *
-     * @parameter default-value="${project.build.outputDirectory}"
      */
+    @Parameter ( defaultValue="${project.build.outputDirectory}" )
     private File classesDirectory;
 
     /**
      * Compile classpath of the maven project.
-     *
-     * @parameter expression="${project.compileClasspathElements}"
-     * @readonly
      */
+    @Parameter( defaultValue = "${project.compileClasspathElements}", readonly = true )
     protected List projectCompileClasspathElements;
 
     /**

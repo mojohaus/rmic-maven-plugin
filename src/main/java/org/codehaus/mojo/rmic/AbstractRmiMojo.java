@@ -35,6 +35,8 @@ import java.util.Set;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
@@ -59,30 +61,26 @@ public abstract class AbstractRmiMojo
     
     /**
      * A <code>List</code> of <code>Source</code> configurations to compile.
-     *
-     * @parameter
      */
+    @Parameter
     private List<Source> sources;
 
     /**
      * A list of inclusions when searching for classes to compile.
-     *
-     * @parameter
      */
+    @Parameter
     protected Set<String> includes;
 
     /**
      * A list of exclusions when searching for classes to compile.
-     *
-     * @parameter
      */
+    @Parameter
     protected Set<String> excludes;
 
     /**
      * The id of the rmi compiler to use.
-     *
-     * @parameter default-value="sun"
      */
+    @Parameter( defaultValue="sun" )
     protected String compilerId;
 
     // @todo change this to a Map<String, RmiCompiler>, so you can choose one by settings compilerId
@@ -92,73 +90,63 @@ public abstract class AbstractRmiMojo
      * The version of the rmi protocol to which the stubs should be compiled. Valid values include 1.1, 1.2, compat. See
      * the rmic documentation for more information. If nothing is specified the underlying rmi compiler will
      * choose the default value.  For example, in sun jdk 1.5 the default is 1.2.
-     *
-     * @parameter
      */
+    @Parameter
     private String version;
 
     /**
      * Create stubs for IIOP.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter (defaultValue="false")
     private boolean iiop;
 
     /**
      * Do not create stubs optimized for same process.
-     *
-     * @parameter
      */
+    @Parameter (defaultValue="false")
     private boolean noLocalStubs;
 
     /**
      * Create IDL.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter (defaultValue="false")
     private boolean idl;
 
     /**
      * Do not generate methods for valuetypes.
-     *
-     * @parameter
      */
+    @Parameter (defaultValue="false")
     private boolean noValueMethods;
 
     /**
      * Do not delete intermediate generated source files.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter (defaultValue="false")
     private boolean keep;
 
     /**
      * Turn off rmic warnings.
-     *
-     * @parameter
      */
+    @Parameter (defaultValue="false")
     private boolean nowarn;
 
     /**
      * Enable poa generation.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter (defaultValue="false")
     private boolean poa;
 
     /**
      * Enable verbose output.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter (defaultValue="false")
     private boolean verbose;
 
     /**
      * Time in milliseconds between automatic recompilations. A value of 0 means that up to date rmic output classes
      * will not be recompiled until the source classes change.
-     *
-     * @parameter default-value=0
      */
+    @Parameter (defaultValue="0")
     private int staleMillis;
 
     // ----------------------------------------------------------------------
@@ -167,10 +155,8 @@ public abstract class AbstractRmiMojo
 
     /**
      * The maven project.
-     *
-     * @parameter expression="${project}"
-     * @readonly
      */
+    @Component
     protected MavenProject project;
 
     /**
