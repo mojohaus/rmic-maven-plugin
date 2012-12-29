@@ -158,7 +158,7 @@ public class SunRmiCompiler
         }
     }
 
-    private String buildClasspath( List classpathList )
+    private String buildClasspath( List<String> classpathList )
     {
         StringBuffer classpath = new StringBuffer( classpathList.get( 0 ).toString() );
         for ( int i = 1; i < classpathList.size(); i++ )

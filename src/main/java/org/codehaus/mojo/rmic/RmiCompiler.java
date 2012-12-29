@@ -24,8 +24,6 @@ package org.codehaus.mojo.rmic;
 
 import org.apache.maven.plugin.logging.Log;
 
-import java.util.List;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$

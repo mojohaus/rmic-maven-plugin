@@ -58,7 +58,7 @@ public class RmicMojo
      * Compile classpath of the maven project.
      */
     @Parameter( defaultValue = "${project.compileClasspathElements}", readonly = true )
-    protected List projectCompileClasspathElements;
+    private List<String> projectCompileClasspathElements;
 
     /**
      * Get the directory where rmic generated class files are written.
@@ -85,7 +85,7 @@ public class RmicMojo
      *
      * @return A list containing the project classpath elements.
      */
-    public List getProjectClasspathElements()
+    public List<String> getProjectClasspathElements()
     {
         return projectCompileClasspathElements;
     }
