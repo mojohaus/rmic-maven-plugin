@@ -91,54 +91,63 @@ public abstract class AbstractRmiMojo
      * the rmic documentation for more information. If nothing is specified the underlying rmi compiler will
      * choose the default value.  For example, in sun jdk 1.5 the default is 1.2.
      */
+    @SuppressWarnings( "unused" )
     @Parameter
     private String version;
 
     /**
      * Create stubs for IIOP.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean iiop;
 
     /**
      * Do not create stubs optimized for same process.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean noLocalStubs;
 
     /**
      * Create IDL.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean idl;
 
     /**
      * Do not generate methods for valuetypes.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean noValueMethods;
 
     /**
      * Do not delete intermediate generated source files.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean keep;
 
     /**
      * Turn off rmic warnings.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean nowarn;
 
     /**
      * Enable poa generation.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean poa;
 
     /**
      * Enable verbose output.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="false")
     private boolean verbose;
 
@@ -416,56 +425,6 @@ public abstract class AbstractRmiMojo
             throw new MojoExecutionException( "Problem while generating classpath: " + e.getMessage() );
         }
         return rmiCompileClasspath;
-    }
-
-    public String getCompilerId()
-    {
-        return compilerId;
-    }
-
-    public boolean isIiop()
-    {
-        return iiop;
-    }
-
-    public boolean isPoa()
-    {
-        return poa;
-    }
-
-    public boolean isIdl()
-    {
-        return idl;
-    }
-
-    public boolean isKeep()
-    {
-        return keep;
-    }
-
-    public String getVersion()
-    {
-        return version;
-    }
-
-    public boolean isNowarn()
-    {
-        return nowarn;
-    }
-
-    public boolean isVerbose()
-    {
-        return verbose;
-    }
-
-    public boolean isNoLocalStubs()
-    {
-        return noLocalStubs;
-    }
-
-    public boolean isNoValueMethods()
-    {
-        return noValueMethods;
     }
 
     public Source getSource()
