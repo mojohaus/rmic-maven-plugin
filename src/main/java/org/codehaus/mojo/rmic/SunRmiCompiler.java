@@ -179,7 +179,7 @@ public class SunRmiCompiler
         return logger;
     }
 
-    void compileInProcess( String[] args, CompilerConfiguration config )
+    protected void compileInProcess( String[] args, CompilerConfiguration config )
         throws CompilerException
     {
         final Class<?> mainClass = createMainClass();

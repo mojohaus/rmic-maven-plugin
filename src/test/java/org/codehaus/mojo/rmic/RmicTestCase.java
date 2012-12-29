@@ -434,7 +434,7 @@ public class RmicTestCase extends AbstractMojoTestCase
     static class TestCompiler extends SunRmiCompiler
     {
         @Override
-        void compileInProcess( String[] args, CompilerConfiguration config )
+        protected void compileInProcess( String[] args, CompilerConfiguration config )
             throws CompilerException
         {
             invocations.add( new Invocation( args ) );

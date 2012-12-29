@@ -1,14 +1,14 @@
 package org.codehaus.mojo.rmic;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
-
-import javax.print.attribute.standard.MediaSize.ISO;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.compiler.CompilerConfiguration;
@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.stubbing.answers.DoesNothing;
 
 public class SunRmiCompilerTest
 {
@@ -27,18 +28,13 @@ public class SunRmiCompilerTest
     private ArgumentCaptor<String[]> captor;
 
     @Before
-    public void init()
+    public void init() throws Exception
     {
-        SunRmiCompiler compiler = new SunRmiCompiler()
-        {
-            void compileInProcess( String[] args, org.codehaus.plexus.compiler.CompilerConfiguration config )
-                throws org.codehaus.plexus.compiler.CompilerException
-            {
-                // do nothing, just verify arguments
-            };
-        };
+        SunRmiCompiler compiler = new SunRmiCompiler(); 
         compiler.setLog( mock( Log.class ) );
+
         rmiCompiler = spy( compiler );
+        doAnswer( new DoesNothing() ).when( rmiCompiler ).compileInProcess( any(String[].class), any( CompilerConfiguration.class ) );
 
         MockitoAnnotations.initMocks( this );
     }
