@@ -146,16 +146,6 @@ public class RmicTestCase extends AbstractMojoTestCase
         invocation.assertArgumentFound( "-nowarn" );
     }
 
-    public void test_SourceToString() throws Exception
-    {
-        defineDefaultScan();
-
-        Source source = addNewSource();
-        source.setKeep( true );
-        source.setNowarn( true );
-        source.toString();
-    }
-
     public void test_SourceUsedWhileMojoOptionsSet_ShouldFail() throws Exception
     {
         try
