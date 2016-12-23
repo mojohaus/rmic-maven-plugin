@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>mojo-parent</artifactId>
-        <version>30</version>
+        <version>40</version>
     </parent>
 
     <artifactId>rmic-maven-plugin</artifactId>
@@ -50,14 +50,14 @@
     </properties>
 
     <issueManagement>
-        <system>jira</system>
-        <url>http://jira.codehaus.org/browse/MRMIC</url>
+        <system>github</system>
+        <url>https://github.com/mojohaus/idlj-rmic-plugin/issues/</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/rmic-maven-plugin</developerConnection>
-        <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/rmic-maven-plugin</url>
+        <connection>scm:git:https://github.com/mojohaus/rmic-maven-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/mojohaus/rmic-maven-plugin.git</developerConnection>
+        <url>https://github.com/mojohaus/rmic-maven-plugin</url>
     </scm>
 
     <licenses>
