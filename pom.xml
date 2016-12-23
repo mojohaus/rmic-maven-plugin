@@ -46,7 +46,6 @@
 
     <properties>
         <mavenVersion>2.0.6</mavenVersion>
-        <mojo.java.target>1.5</mojo.java.target>
     </properties>
 
     <issueManagement>
