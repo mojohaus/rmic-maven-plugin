@@ -22,6 +22,11 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.compiler.CompilerConfiguration;
+import org.codehaus.plexus.compiler.CompilerException;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -33,33 +38,26 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.compiler.CompilerConfiguration;
-import org.codehaus.plexus.compiler.CompilerException;
-import org.codehaus.plexus.util.StringUtils;
-
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class SunRmiCompiler
+class SunRmiCompiler
     implements RmiCompiler
 {
-    protected static final String EOL = System.getProperty( "line.separator" );
+    private static final String EOL = System.getProperty( "line.separator" );
 
     /**
      * The name of the class to use for rmi compilation.
      */
-    public static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
+    private static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
 
     private Log logger;
 
     /**
      * Execute the compiler
      * 
-     * @param mojo
      * @param rmiConfig The config object
-     * @param classesToCompile The list of classes to rmi compile
      * @throws RmiCompilerException if there is a problem during compile
      */
     public void execute( RmiCompilerConfiguration rmiConfig )
@@ -69,7 +67,7 @@ public class SunRmiCompiler
         // Build the argument list
         // ----------------------------------------------------------------------
 
-        List<String> arguments = new ArrayList<String>();
+        List<String> arguments = new ArrayList<>();
 
         List<String> classpathList = rmiConfig.getClasspathEntries();
         if ( classpathList.size() > 0 )
@@ -142,9 +140,9 @@ public class SunRmiCompiler
         {
             getLog().debug( "rmic arguments: " );
 
-            for ( int i = 0; i < args.length; i++ )
+            for ( String arg : args )
             {
-                getLog().debug( args[i] );
+                getLog().debug( arg );
             }
         }
 
@@ -160,7 +158,7 @@ public class SunRmiCompiler
 
     private String buildClasspath( List<String> classpathList )
     {
-        StringBuffer classpath = new StringBuffer( classpathList.get( 0 ).toString() );
+        StringBuilder classpath = new StringBuilder( classpathList.get( 0 ) );
         for ( int i = 1; i < classpathList.size(); i++ )
         {
             classpath.append( File.pathSeparator ).append( classpathList.get( i ) );
@@ -202,31 +200,15 @@ public class SunRmiCompiler
     {
         try
         {
-            Constructor<?> constructor = rmicMainClass.getConstructor( new Class[] { OutputStream.class, String.class } );
+            Constructor<?> constructor = rmicMainClass.getConstructor( OutputStream.class, String.class );
             
-            Object main = constructor.newInstance( new Object[] { System.out, "rmic" } );
+            Object main = constructor.newInstance( System.out, "rmic" );
             
-            Method compile = rmicMainClass.getMethod( "compile", new Class[] { String[].class } );
+            Method compile = rmicMainClass.getMethod( "compile", String[].class );
             
             compile.invoke( main, new Object[] { args } );
         }
-        catch ( NoSuchMethodException e )
-        {
-            throw new CompilerException( "Error while executing the compiler.", e );
-        }
-        catch ( IllegalAccessException e )
-        {
-            throw new CompilerException( "Error while executing the compiler.", e );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            throw new CompilerException( "Error while executing the compiler.", e );
-        }
-        catch ( InstantiationException e )
-        {
-            throw new CompilerException( "Error while executing the compiler.", e );
-        }
-        catch ( InvocationTargetException e )
+        catch ( NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e )
         {
             throw new CompilerException( "Error while executing the compiler.", e );
         }
