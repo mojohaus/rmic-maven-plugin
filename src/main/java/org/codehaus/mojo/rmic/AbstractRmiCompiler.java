@@ -1,8 +1,6 @@
 package org.codehaus.mojo.rmic;
 
 /*
- * Copyright (c) 2004-2012, Codehaus.org
- *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
@@ -23,7 +21,6 @@ package org.codehaus.mojo.rmic;
  */
 
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -32,31 +29,52 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id$
+ * A base class for invocation of rmi compilers whose arguments match those required by the JDK version of rmic.
  */
-class SunRmiCompiler
-    implements RmiCompiler
+abstract class AbstractRmiCompiler implements RmiCompiler
 {
-    private static final String EOL = System.getProperty( "line.separator" );
+    private Log logger;
+
+    /* A facade to enable unit testing to control compiler access. */
+    private static ClassLoaderFacade classLoaderFacade = new ClassLoaderFacadeImpl();
+
+    public void setLog( Log log )
+    {
+        logger = log;
+    }
+
+    public Log getLog()
+    {
+        return logger;
+    }
 
     /**
-     * The name of the class to use for rmi compilation.
+     * Specifies the implementation of the classloader facade to use
+     * @param classLoaderFacade a wrapper for class loading.
      */
-    private static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
+    static void setClassLoaderFacade( ClassLoaderFacade classLoaderFacade )
+    {
+        AbstractRmiCompiler.classLoaderFacade = classLoaderFacade;
+    }
 
-    private Log logger;
+    /**
+     * Returns the object to use for classloading.
+     * @return the appropriate loader facade
+     */
+    static ClassLoaderFacade getClassLoaderFacade()
+    {
+        return classLoaderFacade;
+    }
 
     /**
      * Execute the compiler
-     * 
+     *
      * @param rmiConfig The config object
      * @throws RmiCompilerException if there is a problem during compile
      */
@@ -148,7 +166,7 @@ class SunRmiCompiler
 
         try
         {
-            compileInProcess( args, null );
+            compileInProcess( args );
         }
         catch ( CompilerException e )
         {
@@ -167,17 +185,12 @@ class SunRmiCompiler
         return classpath.toString();
     }
 
-    public void setLog( Log log )
+    private static String fileToClassName( String classFileName )
     {
-        logger = log;
+        return StringUtils.replace( StringUtils.replace( classFileName, ".class", "" ), File.separator, "." );
     }
 
-    public Log getLog()
-    {
-        return logger;
-    }
-
-    protected void compileInProcess( String[] args, CompilerConfiguration config )
+    protected void compileInProcess( String[] args )
         throws CompilerException
     {
         final Class<?> mainClass = createMainClass();
@@ -190,10 +203,12 @@ class SunRmiCompiler
         }
         finally
         {
-            // releaseMainClass( mainClass, config );
             thread.setContextClassLoader( contextClassLoader );
         }
     }
+
+    protected abstract Class<?> createMainClass()
+        throws CompilerException;
 
     private static void compileInProcess0( Class<?> rmicMainClass, String[] args )
         throws CompilerException
@@ -201,11 +216,11 @@ class SunRmiCompiler
         try
         {
             Constructor<?> constructor = rmicMainClass.getConstructor( OutputStream.class, String.class );
-            
+
             Object main = constructor.newInstance( System.out, "rmic" );
-            
+
             Method compile = rmicMainClass.getMethod( "compile", String[].class );
-            
+
             compile.invoke( main, new Object[] { args } );
         }
         catch ( NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e )
@@ -214,59 +229,44 @@ class SunRmiCompiler
         }
     }
 
-    private Class<?> createMainClass()
-        throws CompilerException
+    /**
+     * An interface for loading the proper RMI compiler class.
+     */
+    interface ClassLoaderFacade
     {
-        try
-        {
-            // look whether Main is on Maven's classpath
-            return SunRmiCompiler.class.getClassLoader().loadClass( SunRmiCompiler.RMIC_CLASSNAME );
-        }
-        catch ( ClassNotFoundException ex )
-        {
-            // ok
-        }
+        /**
+         * Updates the active classloader to include the specified URLs before the original definitions.
+         *
+         * @param urls a list of URLs to include when searching for classes.
+         */
+        void prependUrls( URL... urls );
 
-        final File toolsJar = new File( System.getProperty( "java.home" ), "../lib/tools.jar" );
-        if ( !toolsJar.exists() )
-        {
-            throw new CompilerException( "tools.jar not found: " + toolsJar );
-        }
-
-        try
-        {
-            final ClassLoader javacClassLoader =
-                new URLClassLoader( new URL[] { toolsJar.toURI().toURL() }, SunRmiCompiler.class.getClassLoader() );
-
-            final Thread thread = Thread.currentThread();
-            final ClassLoader contextClassLoader = thread.getContextClassLoader();
-            thread.setContextClassLoader( javacClassLoader );
-            try
-            {
-                return javacClassLoader.loadClass( SunRmiCompiler.RMIC_CLASSNAME );
-            }
-            finally
-            {
-                thread.setContextClassLoader( contextClassLoader );
-            }
-        }
-        catch ( MalformedURLException ex )
-        {
-            throw new CompilerException(
-                                         "Could not convert the file reference to tools.jar to a URL, path to tools.jar: '"
-                                             + toolsJar.getAbsolutePath() + "'.", ex );
-        }
-        catch ( ClassNotFoundException ex )
-        {
-            throw new CompilerException( "Unable to locate the Rmi Compiler in:" + EOL + "  " + toolsJar + EOL
-                + "Please ensure you are using JDK 1.4 or above and" + EOL + "not a JRE (the " + RMIC_CLASSNAME
-                + " class is required)." + EOL + "In most cases you can change the location of your Java" + EOL
-                + "installation by setting the JAVA_HOME environment variable.", ex );
-        }
+        /**
+         * Loads the specified class using the appropriate classloader.
+         *
+         * @param rmiCompilerClass the name of the class to use for post-processing Java classes for use with Iiop.
+         * @throws ClassNotFoundException if the specified class doesn't exist
+         * @return the actual compiler class to use
+         */
+        Class<?> loadClass( String rmiCompilerClass ) throws ClassNotFoundException;
     }
-    
-    private static String fileToClassName( String classFileName )
+
+    /**
+     * The implementation of ClassLoaderFacade used at runtime.
+     */
+    private static class ClassLoaderFacadeImpl implements ClassLoaderFacade
     {
-        return StringUtils.replace( StringUtils.replace( classFileName, ".class", "" ), File.separator, "." );
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        public void prependUrls( URL... urls )
+        {
+            classLoader = new URLClassLoader( urls, classLoader );
+        }
+
+        public Class<?> loadClass( String rmiCompilerClass ) throws ClassNotFoundException
+        {
+            return classLoader.loadClass( rmiCompilerClass );
+        }
+
     }
 }

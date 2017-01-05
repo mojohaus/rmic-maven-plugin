@@ -1,6 +1,7 @@
 package org.codehaus.mojo.rmic;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.meterware.simplestub.Stub.createStub;
 import static org.codehaus.mojo.rmic.ArgumentSequenceInvocationMatcher.hasArgument;
 import static org.codehaus.mojo.rmic.ArgumentSequenceInvocationMatcher.hasArgumentSequence;
 import static org.codehaus.plexus.util.ReflectionUtils.setVariableValueInObject;
@@ -58,7 +60,7 @@ public class RmicTestCase
         setSourceDirectory( DEFAULT_PROJECT_OUTPUT_DIRECTORY );
         setTargetDirectory( DEFAULT_RMIC_OUTPUT_DIRECTORY );
         setCompileClasspathElements( EMPTY_LIST );
-        mojo.setLog( new TestLog() );
+        mojo.setLog( createStub( Log.class ) );
     }
 
     @Test
@@ -69,12 +71,12 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-            allOf(
-                hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
-                not( hasArgument( "a.b.RemoteInterface" )), not( hasArgument( "a.b.NonRmicClass" )),
-                hasArgumentSequence( "-classpath", DEFAULT_PROJECT_OUTPUT_DIRECTORY ),
-                hasArgumentSequence( "-d", DEFAULT_RMIC_OUTPUT_DIRECTORY )
-            )
+                allOf(
+                        hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
+                        not( hasArgument( "a.b.RemoteInterface" ) ), not( hasArgument( "a.b.NonRmicClass" ) ),
+                        hasArgumentSequence( "-classpath", DEFAULT_PROJECT_OUTPUT_DIRECTORY ),
+                        hasArgumentSequence( "-d", DEFAULT_RMIC_OUTPUT_DIRECTORY )
+                )
         );
     }
 
@@ -85,11 +87,13 @@ public class RmicTestCase
         scanResults.add( defineRemoteInterface( "a.b.RemoteInterface" ) );
         scanResults.add( defineRemoteClass( "a.b.RemoteClass1" ) );
         scanResults.add( defineRemoteClass( "a.b.RemoteClass2" ) );
-        fileSystem.defineExpectedScan( DEFAULT_PROJECT_OUTPUT_DIRECTORY, DEFAULT_INCLUDES, DEFAULT_EXCLUDES, scanResults );
+        fileSystem.defineExpectedScan( DEFAULT_PROJECT_OUTPUT_DIRECTORY, DEFAULT_INCLUDES, DEFAULT_EXCLUDES,
+                scanResults );
     }
 
     @Test
-    public void whenClasspathElementsSet_compilerSpecifiesClasspath() throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
+    public void whenClasspathElementsSet_compilerSpecifiesClasspath() throws MojoExecutionException,
+            NoSuchFieldException, IllegalAccessException
     {
         defineDefaultScan();
         setCompileClasspathElements( new ArrayList<>( Arrays.asList( new String[]{"xy"} ) ) );
@@ -97,7 +101,7 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    hasArgumentSequence("-classpath", "xy" + File.pathSeparator + DEFAULT_PROJECT_OUTPUT_DIRECTORY ) );
+                hasArgumentSequence( "-classpath", "xy" + File.pathSeparator + DEFAULT_PROJECT_OUTPUT_DIRECTORY ) );
     }
 
     @Test
@@ -111,9 +115,9 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    allOf( hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
-                           hasArgument( "a.b.RemoteInterface" ), not( hasArgument( "a.b.NonRmicClass" ) )
-                    ) );
+                allOf( hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
+                        hasArgument( "a.b.RemoteInterface" ), not( hasArgument( "a.b.NonRmicClass" ) )
+                ) );
     }
 
     @Test
@@ -127,7 +131,7 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    both( hasArgument( "-iiop" ) ).and( hasArgument( "-nolocalstubs" ) ) );
+                both( hasArgument( "-iiop" ) ).and( hasArgument( "-nolocalstubs" ) ) );
     }
 
     @Test
@@ -141,7 +145,7 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    both( hasArgument( "-idl" ) ).and( hasArgument( "-noValueMethods" ) ) );
+                both( hasArgument( "-idl" ) ).and( hasArgument( "-noValueMethods" ) ) );
     }
 
     @Test
@@ -155,7 +159,7 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    both( hasArgument( "-keep" ) ).and( hasArgument( "-nowarn" ) ) );
+                both( hasArgument( "-keep" ) ).and( hasArgument( "-nowarn" ) ) );
     }
 
     @Test(expected = MojoExecutionException.class)
@@ -181,7 +185,7 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation(),
-                    both( hasArgument( "-verbose" ) ).and( hasArgument( "-v1.2" ) ) );
+                both( hasArgument( "-verbose" ) ).and( hasArgument( "-v1.2" ) ) );
     }
 
     @Test(expected = MojoExecutionException.class)
@@ -233,19 +237,21 @@ public class RmicTestCase
         mojo.execute();
 
         assertThat( testRmiCompiler.getInvocation( 0 ),
-                    allOf(
+                allOf(
                         hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
                         not( hasArgument( "c.d.RemoteClass1" ) ), not( hasArgument( "-poa" ) )
-                    ) );
+                ) );
 
         assertThat( testRmiCompiler.getInvocation( 1 ),
-                    allOf(
+                allOf(
                         hasArgument( "c.d.RemoteClass1" ), hasArgument( "c.d.RemoteClass2" ),
                         not( hasArgument( "a.b.RemoteClass1" ) ), not( hasArgument( "a.b.RemoteClass2" ) ),
                         hasArgument( "-poa" )
-                    ) );
+                ) );
 
     }
+
+    // todo test compiler selection
 
     private File defineNonRemoteClass( String className )
     {
@@ -291,7 +297,7 @@ public class RmicTestCase
     }
 
     private void defineIncludes( Source config, Set includes ) throws NoSuchFieldException,
-                                                                          IllegalAccessException
+            IllegalAccessException
     {
         setVariableValueInObject( config, "includes", includes );
     }
@@ -405,7 +411,8 @@ public class RmicTestCase
         {
             for ( URL classpathUrl : classpathUrls )
             {
-                Object object = fileSystem.getFileContents( new File( toFile( classpathUrl ), toClassFileName( className ) ) );
+                Object object = fileSystem.getFileContents( new File( toFile( classpathUrl ), toClassFileName(
+                        className ) ) );
                 if ( object instanceof Class )
                 {
                     return (Class) object;
@@ -435,78 +442,6 @@ public class RmicTestCase
 
     interface RmicInterface extends Remote
     {
-    }
-
-
-    private static class TestLog implements org.apache.maven.plugin.logging.Log
-    {
-        public boolean isDebugEnabled()
-        {
-            return false;
-        }
-
-        public void debug( CharSequence charSequence )
-        {
-        }
-
-        public void debug( CharSequence charSequence, Throwable throwable )
-        {
-        }
-
-        public void debug( Throwable throwable )
-        {
-        }
-
-        public boolean isInfoEnabled()
-        {
-            return false;
-        }
-
-        public void info( CharSequence charSequence )
-        {
-        }
-
-        public void info( CharSequence charSequence, Throwable throwable )
-        {
-        }
-
-        public void info( Throwable throwable )
-        {
-        }
-
-        public boolean isWarnEnabled()
-        {
-            return false;
-        }
-
-        public void warn( CharSequence charSequence )
-        {
-        }
-
-        public void warn( CharSequence charSequence, Throwable throwable )
-        {
-        }
-
-        public void warn( Throwable throwable )
-        {
-        }
-
-        public boolean isErrorEnabled()
-        {
-            return false;
-        }
-
-        public void error( CharSequence charSequence )
-        {
-        }
-
-        public void error( CharSequence charSequence, Throwable throwable )
-        {
-        }
-
-        public void error( Throwable throwable )
-        {
-        }
     }
 
 

@@ -1,6 +1,5 @@
 package org.codehaus.mojo.rmic;
 
-import org.codehaus.plexus.compiler.CompilerConfiguration;
 import org.codehaus.plexus.compiler.CompilerException;
 
 import java.util.ArrayList;
@@ -14,9 +13,9 @@ import static org.hamcrest.Matchers.greaterThan;
 /**
  * A test version of the RmiCompiler.
  */
-class TestRmiCompiler extends SunRmiCompiler
+class TestRmiCompiler extends AbstractRmiCompiler
 {
-    List<Invocation> invocations = new ArrayList<>();
+    private List<Invocation> invocations = new ArrayList<>();
 
     /**
      * Sets this compiler as the active one for the specified mojo.
@@ -48,10 +47,19 @@ class TestRmiCompiler extends SunRmiCompiler
         return invocations.get( i );
     }
 
+    /**
+     * Instead of invoking the compiler, simply records the call.
+     * @param args the arguments passed to the rmi compiler
+     */
     @Override
-    protected void compileInProcess( String[] args, CompilerConfiguration config )
-            throws CompilerException
+    protected void compileInProcess( String[] args )
     {
         invocations.add( new Invocation( args ) );
+    }
+
+    @Override
+    protected Class<?> createMainClass() throws CompilerException
+    {
+        return null;
     }
 }

@@ -33,9 +33,7 @@ public interface RmiCompiler
     /**
      * Run the rmi compilation against the compiled classes.
      *
-     * @param mojo
      * @param rmiConfig        The settings to be passed to the rmi compiler
-     * @param classesToCompile List of class names to compile
      * @throws RmiCompilerException If there is a problem during compilation
      */
     void execute( RmiCompilerConfiguration rmiConfig )
