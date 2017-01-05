@@ -1,19 +1,33 @@
 package org.codehaus.mojo.rmic;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.codehaus.plexus.compiler.CompilerConfiguration;
-import org.codehaus.plexus.compiler.CompilerException;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.mapping.SourceMapping;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.rmi.Remote;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class RmicTestCase extends AbstractMojoTestCase
+import static org.codehaus.mojo.rmic.ArgumentSequenceInvocationMatcher.hasArgument;
+import static org.codehaus.mojo.rmic.ArgumentSequenceInvocationMatcher.hasArgumentSequence;
+import static org.codehaus.plexus.util.ReflectionUtils.setVariableValueInObject;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.fail;
+
+public class RmicTestCase
 {
     private static File DEFAULT_PROJECT_OUTPUT_DIRECTORY = new File( "target/classes" ).getAbsoluteFile();
     private static File DEFAULT_RMIC_OUTPUT_DIRECTORY = new File( "target/rmi-classes" ).getAbsoluteFile();
@@ -24,48 +38,49 @@ public class RmicTestCase extends AbstractMojoTestCase
 
     private static Set<String> INCLUDES_A = newSet( "a/b/*" );
     private static Set<String> INCLUDES_B = newSet( "c/d/*" );
+    private final TestRmiCompiler testRmiCompiler = new TestRmiCompiler();
 
     private static Set<String> newSet( String contents )
     {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
         result.add( contents );
         return result;
     }
-
-    private static List<Invocation> invocations = new ArrayList<Invocation>();
 
     private final TestDependencies dependencies = new TestDependencies();
     private final RmicMojo mojo = new RmicMojo( dependencies );
     private final ScannableFileSystem fileSystem = new ScannableFileSystem();
 
+    @Before
     public void setUp() throws Exception
     {
-        super.setUp();
-        setVariableValueToObject( mojo, "rmiCompiler", new TestCompiler() );
+        testRmiCompiler.setInMojo( mojo );
         setSourceDirectory( DEFAULT_PROJECT_OUTPUT_DIRECTORY );
         setTargetDirectory( DEFAULT_RMIC_OUTPUT_DIRECTORY );
         setCompileClasspathElements( EMPTY_LIST );
         mojo.setLog( new TestLog() );
-        invocations.clear();
     }
 
-    public void test_withDefaultConfiguration_shouldProcessRemoteClassesOnly() throws MojoExecutionException
+    @Test
+    public void withDefaultConfiguration_shouldProcessRemoteClassesOnly() throws MojoExecutionException
     {
         defineDefaultScan();
 
         mojo.execute();
 
-        assertEquals( 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentsFound( "a.b.RemoteClass1", "a.b.RemoteClass2" );
-        invocation.assertArgumentsNotFound( "a.b.RemoteInterface", "a.b.NonRmicClass" );
-        invocation.assertArgumentSequenceFound( "-classpath", DEFAULT_PROJECT_OUTPUT_DIRECTORY );
-        invocation.assertArgumentSequenceFound( "-d", DEFAULT_RMIC_OUTPUT_DIRECTORY );
+        assertThat( testRmiCompiler.getInvocation(),
+            allOf(
+                hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
+                not( hasArgument( "a.b.RemoteInterface" )), not( hasArgument( "a.b.NonRmicClass" )),
+                hasArgumentSequence( "-classpath", DEFAULT_PROJECT_OUTPUT_DIRECTORY ),
+                hasArgumentSequence( "-d", DEFAULT_RMIC_OUTPUT_DIRECTORY )
+            )
+        );
     }
 
     private void defineDefaultScan()
     {
-        Set<File> scanResults = new HashSet<File>();
+        Set<File> scanResults = new HashSet<>();
         scanResults.add( defineNonRemoteClass( "a.b.NonRmicClass" ) );
         scanResults.add( defineRemoteInterface( "a.b.RemoteInterface" ) );
         scanResults.add( defineRemoteClass( "a.b.RemoteClass1" ) );
@@ -73,149 +88,133 @@ public class RmicTestCase extends AbstractMojoTestCase
         fileSystem.defineExpectedScan( DEFAULT_PROJECT_OUTPUT_DIRECTORY, DEFAULT_INCLUDES, DEFAULT_EXCLUDES, scanResults );
     }
 
-    public void test_createClasspath() throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
+    @Test
+    public void whenClasspathElementsSet_compilerSpecifiesClasspath() throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
     {
         defineDefaultScan();
-        setCompileClasspathElements( new ArrayList<String>( Arrays.asList( new String[]{"xy"} ) ) );
+        setCompileClasspathElements( new ArrayList<>( Arrays.asList( new String[]{"xy"} ) ) );
 
         mojo.execute();
 
-        assertEquals( 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentSequenceFound( "-classpath",
-                "xy" + File.pathSeparator + DEFAULT_PROJECT_OUTPUT_DIRECTORY );
+        assertThat( testRmiCompiler.getInvocation(),
+                    hasArgumentSequence("-classpath", "xy" + File.pathSeparator + DEFAULT_PROJECT_OUTPUT_DIRECTORY ) );
     }
 
-    public void test_withIiopEnabled_shouldProcessRemoteClassesAndInterfaces()
+    @Test
+    public void withIiopEnabled_shouldProcessRemoteClassesAndInterfaces()
             throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
     {
         defineDefaultScan();
 
         mojo.setIiop( true );
+
         mojo.execute();
 
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentsFound( "a.b.RemoteClass1", "a.b.RemoteClass2", "a.b.RemoteInterface" );
-        invocation.assertArgumentNotFound( "a.b.NonRmicClass" );
-        invocation.assertArgumentFound( "-iiop" );
+        assertThat( testRmiCompiler.getInvocation(),
+                    allOf( hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
+                           hasArgument( "a.b.RemoteInterface" ), not( hasArgument( "a.b.NonRmicClass" ) )
+                    ) );
     }
 
-    public void test_withIiopEnabled_maySpecifyNoLocalStubs()
+    @Test
+    public void withIiopEnabled_maySpecifyNoLocalStubs()
             throws MojoExecutionException, NoSuchFieldException, IllegalAccessException
     {
         defineDefaultScan();
-
         mojo.setIiop( true );
         mojo.setNoLocalStubs( true );
+
         mojo.execute();
 
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentFound( "-iiop" );
-        invocation.assertArgumentFound( "-nolocalstubs" );
+        assertThat( testRmiCompiler.getInvocation(),
+                    both( hasArgument( "-iiop" ) ).and( hasArgument( "-nolocalstubs" ) ) );
     }
 
-    public void test_withIDLSpecifiedSetIDLSwitch() throws Exception
+    @Test
+    public void withIDLSpecifiedSetIDLSwitch() throws Exception
     {
         defineDefaultScan();
-
         Source source = addNewSource();
         source.setIdl( true );
         source.setNoValueMethods( true );
+
         mojo.execute();
 
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentFound( "-idl" );
-        invocation.assertArgumentFound( "-noValueMethods" );
+        assertThat( testRmiCompiler.getInvocation(),
+                    both( hasArgument( "-idl" ) ).and( hasArgument( "-noValueMethods" ) ) );
     }
 
-    public void test_withKeepAndWarnSpecifiedSetSwitches() throws Exception
+    @Test
+    public void withKeepAndWarnSpecifiedSetSwitches() throws Exception
     {
         defineDefaultScan();
+        Source source = addNewSource();
+        source.setKeep( true );
+        source.setNowarn( true );
+
+        mojo.execute();
+
+        assertThat( testRmiCompiler.getInvocation(),
+                    both( hasArgument( "-keep" ) ).and( hasArgument( "-nowarn" ) ) );
+    }
+
+    @Test(expected = MojoExecutionException.class)
+    public void whenMojoOptionsSetWhileSourceSpecified_throwException() throws Exception
+    {
+        defineDefaultScan();
+        mojo.setIiop( true );
 
         Source source = addNewSource();
         source.setKeep( true );
         source.setNowarn( true );
+
         mojo.execute();
-
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentFound( "-keep" );
-        invocation.assertArgumentFound( "-nowarn" );
     }
 
-    public void test_SourceUsedWhileMojoOptionsSet_ShouldFail() throws Exception
-    {
-        try
-        {
-            defineDefaultScan();
-            mojo.setIiop( true );
-
-            Source source = addNewSource();
-            source.setKeep( true );
-            source.setNowarn( true );
-            mojo.execute();
-            fail( "Should have rejected use of both sources and flags directly on the mojo" );
-        }
-        catch ( MojoExecutionException e )
-        {
-            // expect this
-        }
-    }
-
-    public void test_withVerboseAndVersionSpecifiedSetSwitches() throws Exception
+    @Test
+    public void withVerboseAndVersionSpecifiedSetSwitches() throws Exception
     {
         defineDefaultScan();
-
         mojo.setVerbose( true );
         mojo.setVersion( "1.2" );
+
         mojo.execute();
 
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentFound( "-verbose" );
-        invocation.assertArgumentFound( "-v1.2" );
+        assertThat( testRmiCompiler.getInvocation(),
+                    both( hasArgument( "-verbose" ) ).and( hasArgument( "-v1.2" ) ) );
     }
 
-    public void test_withPoaSpecifiedAndNotIiop_throwException() throws Exception
+    @Test(expected = MojoExecutionException.class)
+    public void whenPoaSpecifiedAndNotIiop_throwException() throws Exception
     {
         defineDefaultScan();
-
         mojo.setPoa( true );
-        try
-        {
-            mojo.execute();
-            fail( "No exception thrown" );
-        }
-        catch ( MojoExecutionException e )
-        {
-            // expect this
-        }
+
+        mojo.execute();
     }
 
-    public void test_withPoaSpecifiedSetSwitches() throws Exception
+    @Test
+    public void whenPoaSpecifiedSetSwitches() throws Exception
     {
         defineDefaultScan();
-
         mojo.setIiop( true );
         mojo.setPoa( true );
+
         mojo.execute();
 
-        assertEquals( "Number of invocations", 1, invocations.size() );
-        Invocation invocation = invocations.get( 0 );
-        invocation.assertArgumentFound( "-poa" );
+        assertThat( testRmiCompiler.getInvocation(), hasArgument( "-poa" ) );
     }
 
-    public void test_withTwoSourcesInvokeTwice() throws Exception
+    @Test
+    public void whenTwoSourcesInvokeTwice() throws Exception
     {
-        Set<File> scanResults1 = new HashSet<File>();
+        Set<File> scanResults1 = new HashSet<>();
         scanResults1.add( defineNonRemoteClass( "a.b.NonRmicClass" ) );
         scanResults1.add( defineRemoteInterface( "a.b.RemoteInterface" ) );
         scanResults1.add( defineRemoteClass( "a.b.RemoteClass1" ) );
         scanResults1.add( defineRemoteClass( "a.b.RemoteClass2" ) );
-        Set<File> scanResults2 = new HashSet<File>();
+
+        Set<File> scanResults2 = new HashSet<>();
         scanResults2.add( defineNonRemoteClass( "c.d.NonRmicClass" ) );
         scanResults2.add( defineRemoteInterface( "c.d.RemoteInterface" ) );
         scanResults2.add( defineRemoteClass( "c.d.RemoteClass1" ) );
@@ -233,15 +232,19 @@ public class RmicTestCase extends AbstractMojoTestCase
         source2.setPoa( true );
         mojo.execute();
 
-        assertEquals( "Number of invocations", 2, invocations.size() );
-        Invocation invocation1 = invocations.get( 0 );
-        invocation1.assertArgumentsFound( "a.b.RemoteClass1", "a.b.RemoteClass2" );
-        invocation1.assertArgumentsNotFound( "c.d.RemoteClass1", "-poa" );
+        assertThat( testRmiCompiler.getInvocation( 0 ),
+                    allOf(
+                        hasArgument( "a.b.RemoteClass1" ), hasArgument( "a.b.RemoteClass2" ),
+                        not( hasArgument( "c.d.RemoteClass1" ) ), not( hasArgument( "-poa" ) )
+                    ) );
 
-        Invocation invocation2 = invocations.get( 1 );
-        invocation2.assertArgumentsFound( "c.d.RemoteClass1", "c.d.RemoteClass2" );
-        invocation2.assertArgumentsNotFound( "a.b.RemoteClass1", "a.b.RemoteClass2" );
-        invocation2.assertArgumentFound( "-poa" );
+        assertThat( testRmiCompiler.getInvocation( 1 ),
+                    allOf(
+                        hasArgument( "c.d.RemoteClass1" ), hasArgument( "c.d.RemoteClass2" ),
+                        not( hasArgument( "a.b.RemoteClass1" ) ), not( hasArgument( "a.b.RemoteClass2" ) ),
+                        hasArgument( "-poa" )
+                    ) );
+
     }
 
     private File defineNonRemoteClass( String className )
@@ -274,8 +277,8 @@ public class RmicTestCase extends AbstractMojoTestCase
         List<Source> sources = mojo.getSources();
         if ( sources == null )
         {
-            sources = new ArrayList<Source>();
-            setVariableValueToObject( mojo, "sources", sources );
+            sources = new ArrayList<>();
+            setVariableValueInObject( mojo, "sources", sources );
         }
         Source source = new Source();
         sources.add( source );
@@ -284,90 +287,27 @@ public class RmicTestCase extends AbstractMojoTestCase
 
     private void setSourceDirectory( File directory ) throws NoSuchFieldException, IllegalAccessException
     {
-        setVariableValueToObject( mojo, "classesDirectory", directory );
+        setVariableValueInObject( mojo, "classesDirectory", directory );
     }
 
     private void defineIncludes( Source config, Set includes ) throws NoSuchFieldException,
                                                                           IllegalAccessException
     {
-        setVariableValueToObject( config, "includes", includes );
+        setVariableValueInObject( config, "includes", includes );
     }
 
     private void setTargetDirectory( File directory ) throws NoSuchFieldException, IllegalAccessException
     {
-        setVariableValueToObject( mojo, "outputDirectory", directory );
+        setVariableValueInObject( mojo, "outputDirectory", directory );
     }
 
     private void setCompileClasspathElements( List elements ) throws NoSuchFieldException, IllegalAccessException
     {
-        setVariableValueToObject( mojo, "projectCompileClasspathElements", elements );
+        setVariableValueInObject( mojo, "projectCompileClasspathElements", elements );
     }
 
 
-    static class Invocation
-    {
-        private List arguments;
-
-        Invocation( String[] arguments )
-        {
-            this.arguments = Arrays.asList( arguments );
-        }
-
-        private void assertArgumentSequenceFound( Object argument1, Object argument2 )
-        {
-            assertTrue( "Did not find sequence:" + argument1 + "," + argument2, contains( argument1.toString(),
-                    argument2.toString() ) );
-        }
-
-        private void assertArgumentNotFound( String argument )
-        {
-            assertFalse( contains( argument ) );
-        }
-
-        private void assertArgumentsNotFound( String arg1, String arg2 )
-        {
-            assertArgumentNotFound( arg1 );
-            assertArgumentNotFound( arg2 );
-        }
-
-        private void assertArgumentFound( String argument )
-        {
-            assertTrue( "Did not find: " + argument, contains( argument ) );
-        }
-
-        private void assertArgumentsFound( String arg1, String arg2 )
-        {
-            assertArgumentFound( arg1 );
-            assertArgumentFound( arg2 );
-        }
-
-        private void assertArgumentsFound( String arg1, String arg2, String arg3 )
-        {
-            assertArgumentFound( arg1 );
-            assertArgumentFound( arg2 );
-            assertArgumentFound( arg3 );
-        }
-
-        boolean contains( String argument )
-        {
-            return arguments.contains( argument );
-        }
-
-        boolean contains( String argument1, String argument2 )
-        {
-            int i = arguments.indexOf( argument1 );
-            return i >= 0 && i < arguments.size() - 1 && arguments.get( i + 1 ).equals( argument2 );
-        }
-
-        public String toString()
-        {
-            return "Invocation{" +
-                    "arguments=" + arguments +
-                    '}';
-        }
-    }
-
-    static class ExpectedScan
+    private static class ExpectedScan
     {
         private File root;
         private Set<String> includes;
@@ -388,10 +328,10 @@ public class RmicTestCase extends AbstractMojoTestCase
         }
     }
 
-    class ScannableFileSystem
+    private class ScannableFileSystem
     {
-        Map<File, Object> files = new HashMap<File, Object>();
-        List<ExpectedScan> scans = new ArrayList<ExpectedScan>();
+        Map<File, Object> files = new HashMap<>();
+        List<ExpectedScan> scans = new ArrayList<>();
 
         private Set<File> getFiles( File root, Set<String> includes, Set<String> excludes )
         {
@@ -419,23 +359,13 @@ public class RmicTestCase extends AbstractMojoTestCase
             return file;
         }
 
-        public void defineExpectedScan( File root, Set<String> includes, Set<String> excludes, Set<File> scanResults )
+        void defineExpectedScan( File root, Set<String> includes, Set<String> excludes, Set<File> scanResults )
         {
             scans.add( new ExpectedScan( root, includes, excludes, scanResults ) );
         }
     }
 
-    static class TestCompiler extends SunRmiCompiler
-    {
-        @Override
-        protected void compileInProcess( String[] args, CompilerConfiguration config )
-            throws CompilerException
-        {
-            invocations.add( new Invocation( args ) );
-        }
-    }
-
-    class TestScanner implements SourceInclusionScanner
+    private class TestScanner implements SourceInclusionScanner
     {
         private Set<String> includes;
         private Set<String> excludes;
@@ -456,7 +386,7 @@ public class RmicTestCase extends AbstractMojoTestCase
         }
     }
 
-    class TestDependencies implements AbstractRmiMojo.DependenciesFacade
+    private class TestDependencies implements AbstractRmiMojo.DependenciesFacade
     {
         private URL[] classpathUrls;
 
@@ -495,20 +425,20 @@ public class RmicTestCase extends AbstractMojoTestCase
         }
     }
 
-    static class NonRmicClass
+    private static class NonRmicClass
     {
     }
 
-    static class RmicClass implements Remote
+    private static class RmicClass implements Remote
     {
     }
 
-    static interface RmicInterface extends Remote
+    interface RmicInterface extends Remote
     {
     }
 
 
-    static class TestLog implements org.apache.maven.plugin.logging.Log
+    private static class TestLog implements org.apache.maven.plugin.logging.Log
     {
         public boolean isDebugEnabled()
         {
