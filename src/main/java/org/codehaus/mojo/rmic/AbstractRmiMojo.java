@@ -235,7 +235,8 @@ public abstract class AbstractRmiMojo
     {
         if( source != null && sources != null)
         {
-            throw new MojoExecutionException( "Either use sources or only the sourceflags, don't combine them." );
+            throw new MojoExecutionException( "May not use <source> elements in addition to switches "
+                    + "without a <source> element: " + source.getConfiguredOptions() );
         }
         if ( sources == null || sources.isEmpty() )
         {

@@ -186,6 +186,46 @@ public class Source
         }
     }
 
+    String getConfiguredOptions()
+    {
+        StringBuffer sb = new StringBuffer();
+        appendIfNotEmpty( sb, includes, "includes" );
+        appendIfNotEmpty( sb, excludes, "excludes" );
+        appendOptionIfTrue( sb, isIiop(), "iiop" );
+        appendOptionIfTrue( sb, isIiop() && isNoLocalStubs(), "noLocalStubs" );
+        appendOptionIfTrue( sb, isIdl(), "idl" );
+        appendOptionIfTrue( sb, isIdl() && isNoValueMethods(), "noValueMethods" );
+        appendOptionIfTrue( sb, isKeep(), "keep" );
+        appendOptionIfTrue( sb, isNowarn(), "nowarn" );
+        appendOptionIfTrue( sb, isPoa(), "poa" );
+        return sb.toString();
+    }
+
+    private void appendIfNotEmpty( StringBuffer sb, Set<String> set, String text )
+    {
+        if ( !isEmpty( set ) )
+        {
+            appendOption( sb, text );
+        }
+    }
+
+    private StringBuffer appendOption( StringBuffer sb, String text )
+    {
+        if ( sb.length() != 0 )
+        {
+            sb.append( ", " );
+        }
+        return sb.append( text );
+    }
+
+    private void appendOptionIfTrue( StringBuffer sb, boolean condition, String option )
+    {
+        if ( condition )
+        {
+            appendOption( sb, option );
+        }
+    }
+
     public void setIncludes( Set<String> includes )
     {
         this.includes = includes;

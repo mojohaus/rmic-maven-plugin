@@ -26,6 +26,7 @@ import static org.codehaus.plexus.util.ReflectionUtils.setVariableValueInObject;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.fail;
 
@@ -173,6 +174,27 @@ public class RmicTestCase
         source.setNowarn( true );
 
         mojo.execute();
+    }
+
+    @Test
+    public void whenMojoOptionsSetWhileSourceSpecified_exceptionContainsSuperflousSwitches() throws Exception
+    {
+        defineDefaultScan();
+        mojo.setIiop( true );
+        mojo.setExcludes( new HashSet<>( Arrays.asList( "abc", "cde" ) ) );
+
+        Source source = addNewSource();
+        source.setKeep( true );
+        source.setNowarn( true );
+
+        try
+        {
+            mojo.execute();
+        }
+        catch ( MojoExecutionException e )
+        {
+            assertThat( e.getMessage(), containsString( "excludes, iiop" ));
+        }
     }
 
     @Test
