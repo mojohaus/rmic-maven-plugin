@@ -233,7 +233,7 @@ public abstract class AbstractRmiMojo
      */
     public void execute() throws MojoExecutionException
     {
-        if( source != null && sources != null)
+        if ( sources != null && source != null && source.getConfiguredOptions().length() > 0 )
         {
             throw new MojoExecutionException( "May not use <source> elements in addition to switches "
                     + "without a <source> element: " + source.getConfiguredOptions() );
@@ -330,7 +330,7 @@ public abstract class AbstractRmiMojo
      */
     public Set<File> getRemoteClasses( Source source )
     {
-        Set<File> remoteClasses = new HashSet<File>();
+        Set<File> remoteClasses = new HashSet<>();
 
         try
         {
@@ -364,7 +364,7 @@ public abstract class AbstractRmiMojo
             for ( String include : source.getIncludes() )
             {
                 File includeFile = new File( getClassesDirectory(), include );
-                if ( ( include.indexOf( "*" ) != -1 ) || dependencies.fileExists( includeFile ) )
+                if ( ( include.contains( "*" ) ) || dependencies.fileExists( includeFile ) )
                 {
                     continue;
                 }

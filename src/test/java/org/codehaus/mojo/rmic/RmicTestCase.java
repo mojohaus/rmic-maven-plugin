@@ -198,6 +198,22 @@ public class RmicTestCase
     }
 
     @Test
+    public void whenMojoOptionsSetToDefaultWhileSourceSpecified_useSourceOptions() throws Exception
+    {
+        defineDefaultScan();
+        mojo.setIiop( false );
+
+        Source source = addNewSource();
+        source.setKeep( true );
+        source.setNowarn( true );
+
+        mojo.execute();
+
+        assertThat( testRmiCompiler.getInvocation(),
+                allOf( hasArgument( "-keep" ), hasArgument( "-nowarn" ), not( hasArgument( "-iiop" ) ) ) );
+    }
+
+    @Test
     public void withVerboseAndVersionSpecifiedSetSwitches() throws Exception
     {
         defineDefaultScan();
