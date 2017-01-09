@@ -4,12 +4,12 @@
  Paul Gier <pgier at redhat.com>
  Russell Gold <russell.gold at oracle.com>
  ------
- January 9 2017
+  2017-01-09
  ------
 
 Usage
 
-  By default, the <<<{{{rmic-mojo.html}rmic}}>>> goal will search for classes that implement <<<java.rmi.Remote>>> in
+  By default, the <<<{{{./rmic-mojo.html}rmic}}>>> goal will search for classes that implement <<<java.rmi.Remote>>> in
   the directory <<<$\{project.build.outputDirectory\}>>>.
   Specific files can be included or excluded from compilation by using the <<<\<includes\>>>> and <<<\<excludes\>>>>
   parameters.
