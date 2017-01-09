@@ -7,14 +7,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="author" content="Russell Gold
-Stefano &quot;Kismet&quot; Lenzi
-Trygve Laugstol trygvis@inamo.no
-Paul Gier" />
-    <meta name="Date-Creation-yyyymmdd" content="20170109" />
     <meta name="Date-Revision-yyyymmdd" content="20170109" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>RMI Compiler Maven Plugin &#x2013; Introduction</title>
+    <title>RMI Compiler Maven Plugin &#x2013; Project Dependency Management</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -68,7 +63,7 @@ Paul Gier" />
         RMI Compiler Maven Plugin</a>
                     <span class="divider">/</span>
       </li>
-        <li class="active ">Introduction</li>
+        <li class="active ">Project Dependency Management</li>
         
               
                   <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2017-01-09</li>
@@ -94,10 +89,12 @@ Paul Gier" />
                 <ul class="nav nav-list">
                     <li class="nav-header">Overview</li>
                               
-      <li class="active">
+      <li>
   
-            <a href="#"><span class="none"></span>Introduction</a>
-          </li>
+                          <a href="index.html" title="Introduction">
+          <span class="none"></span>
+        Introduction</a>
+            </li>
                 
       <li>
   
@@ -157,17 +154,17 @@ Paul Gier" />
         Dependency Information</a>
             </li>
                     
-      <li>
-  
-                          <a href="dependency-management.html" title="Dependency Management">
-          <span class="none"></span>
-        Dependency Management</a>
-            </li>
-                    
       <li class="active">
   
-            <a href="#"><span class="none"></span>About</a>
+            <a href="#"><span class="none"></span>Dependency Management</a>
           </li>
+                    
+      <li>
+  
+                          <a href="index.html" title="About">
+          <span class="none"></span>
+        About</a>
+            </li>
                     
       <li>
   
@@ -253,43 +250,45 @@ Paul Gier" />
         <div id="bodyColumn"  class="span10" >
                                   
             <div class="section">
-<h2><a name="RMI_Compiler_Maven_Plugin"></a>RMI Compiler Maven Plugin</h2>
-<p>This plugin works with Maven 2 and uses the java rmic compiler to generate classes used in remote method invocation.</p>
+<h2><a name="Project_Dependency_Management"></a>Project Dependency Management</h2><a name="Project_Dependency_Management"></a>
 <div class="section">
-<h3><a name="Goals_Overview"></a>Goals Overview</h3>
-<ul>
-<li><a href="./rmic-mojo.html">rmic:rmic</a> This goal uses rmic to generate rmi stub and skeleton classes.</li>
-<li><a href="./test-rmic-mojo.html">rmic:test-rmic</a> This goal uses rmic to generate rmi stub and skeleton classes from the project test classes.</li>
-<li><a href="./package-mojo.html">rmic:package</a> This goal packages stub and skeleton classes into a jar.</li></ul></div>
+<h3><a name="compile"></a>compile</h3><a name="compile"></a>
+<p>The following is a list of compile dependencies in the DependencyManagement of this project. These dependencies can be included in the submodules to compile and run the submodule:</p>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>License</th></tr>
+<tr class="b">
+<td>org.apache.maven</td>
+<td><a class="externalLink" href="http://maven.apache.org/maven-plugin-api/">maven-plugin-api</a></td>
+<td>3.0</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
+<tr class="a">
+<td>org.apache.maven.plugin-tools</td>
+<td><a class="externalLink" href="http://maven.apache.org/plugin-tools/maven-plugin-annotations">maven-plugin-annotations</a></td>
+<td>3.4</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr></table></div>
 <div class="section">
-<h3><a name="Usage"></a>Usage</h3>
-<p>This plugin is normally used after Java compilation, during the <tt>process-classes</tt> phase of a build. Detailed instructions on how to use the RMIC Maven Plugin can be found on the <a href="./usage.html">usage</a> page.</p></div>
-<div class="section">
-<h3><a name="Examples"></a>Examples</h3>
-<p>Below is a basic example of configuring your project build to use the RMIC Plugin. By default, the plugin will search for all classes that implement the <tt>java.rmi.Remote</tt> interface. Output will be written to the directory <tt>target/rmi-output</tt>.</p>
-<div>
-<pre>&lt;project&gt;
-  ...
-  &lt;build&gt;
-    &lt;plugins&gt;
-      &lt;plugin&gt;
-        &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
-        &lt;artifactId&gt;rmic-maven-plugin&lt;/artifactId&gt;
-        &lt;version&gt;${project.version}&lt;/version&gt;
-        &lt;executions&gt;
-          &lt;execution&gt;
-            &lt;id&gt;rmi compilation&lt;/id&gt;
-            &lt;goals&gt;
-              &lt;goal&gt;rmic&lt;/goal&gt;
-            &lt;/goals&gt;
-          &lt;/execution&gt;
-        &lt;/executions&gt;
-      &lt;/plugin&gt;
-    &lt;/plugins&gt;
-    ...
-  &lt;/build&gt;
-  ...
-&lt;/project&gt;</pre></div></div></div>
+<h3><a name="test"></a>test</h3><a name="test"></a>
+<p>The following is a list of test dependencies in the DependencyManagement of this project. These dependencies can be included in the submodules to compile and run unit tests for the submodule:</p>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>License</th></tr>
+<tr class="b">
+<td>junit</td>
+<td><a class="externalLink" href="http://junit.org">junit</a></td>
+<td>4.12</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a></td></tr></table></div></div>
                   </div>
             </div>
           </div>
