@@ -22,11 +22,11 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.compiler.CompilerException;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.codehaus.plexus.compiler.CompilerException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -42,7 +42,8 @@ class BuiltInRmiCompiler extends AbstractRmiCompiler
     private static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
 
     private static final String USE_GLASSFISH_RMIC =
-                                    " Built-in RMIC compiler not available in JDK9. Use the glassfish compiler instead.";
+                                    " Built-in RMIC compiler not available in JDK9." +
+                                    " Add a dependency on org.glassfish.corba:rmic to the plugin.";
 
     @Override
     protected Class<?> createMainClass()

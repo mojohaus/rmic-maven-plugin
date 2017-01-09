@@ -20,10 +20,6 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.compiler.CompilerException;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -33,6 +29,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.compiler.CompilerException;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * A base class for invocation of rmi compilers whose arguments match those required by the JDK version of rmic.
@@ -52,15 +52,6 @@ abstract class AbstractRmiCompiler implements RmiCompiler
     public Log getLog()
     {
         return logger;
-    }
-
-    /**
-     * Specifies the implementation of the classloader facade to use
-     * @param classLoaderFacade a wrapper for class loading.
-     */
-    static void setClassLoaderFacade( ClassLoaderFacade classLoaderFacade )
-    {
-        AbstractRmiCompiler.classLoaderFacade = classLoaderFacade;
     }
 
     /**

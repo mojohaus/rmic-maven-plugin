@@ -22,16 +22,6 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
-import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
-import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
@@ -42,6 +32,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
+import org.codehaus.plexus.compiler.util.scan.StaleSourceScanner;
+import org.codehaus.plexus.compiler.util.scan.mapping.SuffixMapping;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Generic super class of rmi compiler mojos.
@@ -69,12 +69,14 @@ public abstract class AbstractRmiMojo
      * A list of inclusions when searching for classes to compile.
      */
     @Parameter
+    @SuppressWarnings( "unused" )
     protected Set<String> includes;
 
     /**
      * A list of exclusions when searching for classes to compile.
      */
     @Parameter
+    @SuppressWarnings( "unused" )
     protected Set<String> excludes;
 
     /**
@@ -83,7 +85,6 @@ public abstract class AbstractRmiMojo
     @Parameter( defaultValue="sun" )
     protected String compiler;
 
-    // @todo change this to a Map<String, RmiCompiler>, so you can choose one by settings compilerId
     private RmiCompiler rmiCompiler = new BuiltInRmiCompiler();
 
     /**
@@ -155,6 +156,7 @@ public abstract class AbstractRmiMojo
      * Time in milliseconds between automatic recompilations. A value of 0 means that up to date rmic output classes
      * will not be recompiled until the source classes change.
      */
+    @SuppressWarnings( "unused" )
     @Parameter (defaultValue="0")
     private int staleMillis;
 
@@ -181,7 +183,7 @@ public abstract class AbstractRmiMojo
     /**
      * Creates the abstract class using a production implementation of the dependencies.
      */
-    protected AbstractRmiMojo()
+    AbstractRmiMojo()
     {
         this( DEPENDENCIES_FACADE );
     }
@@ -310,7 +312,7 @@ public abstract class AbstractRmiMojo
      *
      * @return list of classpath elements
      */
-    public List<String> getRmicClasspathElements()
+    private List<String> getRmicClasspathElements()
     {
         List<String> classpathElements = getProjectClasspathElements();
 
@@ -325,10 +327,10 @@ public abstract class AbstractRmiMojo
     /**
      * Search the input directory for classes to compile.
      *
-     * @param source
+     * @param source the source element on which to operate
      * @return a list of class names to rmic
      */
-    public Set<File> getRemoteClasses( Source source )
+    private Set<File> getRemoteClasses( Source source )
     {
         Set<File> remoteClasses = new HashSet<>();
 
@@ -338,7 +340,7 @@ public abstract class AbstractRmiMojo
             List<URL> classpathList = generateUrlCompileClasspath();
             URL[] classpathUrls = new URL[classpathList.size()];
             classpathUrls[0] = getClassesDirectory().toURI().toURL();
-            classpathUrls = (URL[]) classpathList.toArray( classpathUrls );
+            classpathUrls = classpathList.toArray( classpathUrls );
             dependencies.defineUrlClassLoader( classpathUrls );
 
             // Scan for remote classes
@@ -407,10 +409,10 @@ public abstract class AbstractRmiMojo
      *
      * @return list of url classpath elements
      */
-    protected List<URL> generateUrlCompileClasspath()
+    private List<URL> generateUrlCompileClasspath()
             throws MojoExecutionException
     {
-        List<URL> rmiCompileClasspath = new ArrayList<URL>();
+        List<URL> rmiCompileClasspath = new ArrayList<>();
         try
         {
             rmiCompileClasspath.add( getClassesDirectory().toURI().toURL() );
@@ -428,7 +430,7 @@ public abstract class AbstractRmiMojo
         return rmiCompileClasspath;
     }
 
-    public Source getSource()
+    private Source getSource()
     {
         if( source == null )
         {
@@ -438,6 +440,7 @@ public abstract class AbstractRmiMojo
     }
     
     // Plexus trick: if there's a setter for a @parameter, use the setter
+    @SuppressWarnings("unused")
     public void setIncludes( Set<String> includes )
     {
         getSource().setIncludes( includes );
@@ -463,21 +466,25 @@ public abstract class AbstractRmiMojo
         getSource().setNoLocalStubs( noLocalStubs );
     }
 
+    @SuppressWarnings("unused")
     public void setIdl( Boolean idl )
     {
         getSource().setIdl( idl );
     }
 
+    @SuppressWarnings("unused")
     public void setNoValueMethods( Boolean noValueMethods )
     {
         getSource().setNoValueMethods( noValueMethods );
     }
 
+    @SuppressWarnings("unused")
     public void setKeep( Boolean keep )
     {
         getSource().setKeep( keep );
     }
 
+    @SuppressWarnings("unused")
     public void setNowarn( Boolean nowarn )
     {
         getSource().setNowarn( nowarn );

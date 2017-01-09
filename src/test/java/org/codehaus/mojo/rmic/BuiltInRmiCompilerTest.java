@@ -1,19 +1,21 @@
 package org.codehaus.mojo.rmic;
 
 import com.meterware.simplestub.Memento;
+import com.meterware.simplestub.StaticStubSupport;
 import com.meterware.simplestub.SystemPropertySupport;
-import org.apache.maven.plugin.logging.Log;
-import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.maven.plugin.logging.Log;
+import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Test;
 
 import static com.meterware.simplestub.Stub.createStub;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +32,6 @@ public class BuiltInRmiCompilerTest
     private final RmiCompiler rmiCompiler = new BuiltInRmiCompiler();
     private final TestClassloaderFacade loaderFacade = new TestClassloaderFacade();
 
-    private AbstractRmiCompiler.ClassLoaderFacade savedFacade;
     private int iteration = 0;
     private boolean foundToolsJar = false;
 
@@ -39,19 +40,16 @@ public class BuiltInRmiCompilerTest
     @Before
     public void setUp() throws Exception
     {
-        savedFacade = AbstractRmiCompiler.getClassLoaderFacade();
-        AbstractRmiCompiler.setClassLoaderFacade( loaderFacade );
-
         config.setOutputLocation( OUTPUT_LOCATION );
         rmiCompiler.setLog( createStub( Log.class ) );
 
+        mementos.add( StaticStubSupport.install( AbstractRmiCompiler.class, "classLoaderFacade", loaderFacade ) );
         mementos.add( SystemPropertySupport.preserve( "java.version" ) );
     }
 
     @After
     public void tearDown() throws Exception
     {
-        AbstractRmiCompiler.setClassLoaderFacade( savedFacade );
         for (Memento memento : mementos) memento.revert();
     }
 
@@ -155,7 +153,7 @@ public class BuiltInRmiCompilerTest
             rmiCompiler.execute( config );
             fail("Did not report compiler class not found");
         } catch (RmiCompilerException e) {
-            assertThat(e.getMessage(), Matchers.containsString("Use the glassfish compiler"));
+            assertThat(e.getMessage(), Matchers.containsString("Add a dependency on org.glassfish.corba:rmic"));
         }
     }
 
