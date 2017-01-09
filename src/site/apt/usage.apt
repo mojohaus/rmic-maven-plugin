@@ -2,8 +2,9 @@
  Usage
  ------
  Paul Gier <pgier at redhat.com>
+ Russell Gold <russell.gold at oracle.com>
  ------
- February 07 2008
+ January 9 2017
  ------
 
 Usage
@@ -102,6 +103,39 @@ Usage
   outputDirectory can be set to <<<$\{project.build.outputDirectory\}>>>.
   
   Similarly, to include the stubs in the test jar the <<<testOutputDirectory>>> should be set to <<<$\{project.build.testOutputDirectory\}>>>
+
+* Running in JDK9
+
+  As of JDK9, tools.jar is gone, and the built-in rmic is no longer available. Instead, you will need to use the
+  version of rmic packaged with the glassfish ORB, and add it as a dependency to the plugin:
+
+-------------------
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rmic-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          ...
+        </executions>
+        <dependencies>
+          <dependency>
+              <groupId>org.glassfish.corba</groupId>
+              <artifactId>rmic</artifactId>
+              <version>4.02-b007</version>
+          </dependency>
+      </dependencies>
+      </plugin>
+    </plugins>
+    ...
+  </build>
+  ...
+</project>
+-------------------
+
 
 * Using the package goal
 
