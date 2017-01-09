@@ -6,7 +6,7 @@
  Trygve Laugstol <trygvis@inamo.no>
  Paul Gier
  ------
- February 07 2008
+ 2017-01-09
  ------
 
 RMI Compiler Maven Plugin
@@ -15,16 +15,16 @@ RMI Compiler Maven Plugin
 
 * Goals Overview
 
-  * {{{rmic-mojo.html}rmic:rmic}}  This goal uses rmic to generate rmi stub and skeleton classes.
+  * {{{./rmic-mojo.html}rmic:rmic}}  This goal uses rmic to generate rmi stub and skeleton classes.
 
-  * {{{test-rmic-mojo.html}rmic:test-rmic}}  This goal uses rmic to generate rmi stub and skeleton classes from the project test classes.
+  * {{{./test-rmic-mojo.html}rmic:test-rmic}}  This goal uses rmic to generate rmi stub and skeleton classes from the project test classes.
 
-  * {{{package-mojo.html}rmic:package}} This goal packages stub and skeleton classes into a jar.
+  * {{{./package-mojo.html}rmic:package}} This goal packages stub and skeleton classes into a jar.
 
 * Usage
 
   This plugin is normally used after Java compilation, during the <<<process-classes>>> phase of a build.
-  Detailed instructions on how to use the RMIC Maven Plugin can be found on the {{{usage.html}usage}} page.
+  Detailed instructions on how to use the RMIC Maven Plugin can be found on the {{{./usage.html}usage}} page.
 
 * Examples
 

@@ -22,9 +22,6 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -35,6 +32,9 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Creates a jar containing the rmic generated classes.
@@ -59,7 +59,7 @@ public class PackageRmiMojo
     @Parameter ( defaultValue="${project.build.finalName}" )
     private String finalName;
 
-    @Component
+    @Parameter( defaultValue = "${project}", readonly = true )
     private MavenProject project;
 
     /**
