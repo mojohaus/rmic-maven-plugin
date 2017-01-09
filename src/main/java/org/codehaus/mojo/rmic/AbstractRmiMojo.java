@@ -1,7 +1,7 @@
 package org.codehaus.mojo.rmic;
 
 /*
- * Copyright (c) 2004-2012, Codehaus.org
+ * Copyright (c) 2004-2017, Codehaus.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -81,7 +81,7 @@ public abstract class AbstractRmiMojo
     /**
      * The id of the rmi compiler to use.
      */
-    @Parameter( defaultValue="sun" )
+    @Parameter( defaultValue = "sun" )
     protected String compiler;
 
     private RmiCompiler rmiCompiler = new BuiltInRmiCompiler();
@@ -99,56 +99,56 @@ public abstract class AbstractRmiMojo
      * Create stubs for IIOP.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean iiop;
 
     /**
      * Do not create stubs optimized for same process.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean noLocalStubs;
 
     /**
      * Create IDL.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean idl;
 
     /**
      * Do not generate methods for valuetypes.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean noValueMethods;
 
     /**
      * Do not delete intermediate generated source files.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean keep;
 
     /**
      * Turn off rmic warnings.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean nowarn;
 
     /**
      * Enable poa generation.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean poa;
 
     /**
      * Enable verbose output.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="false")
+    @Parameter( defaultValue = "false" )
     private boolean verbose;
 
     /**
@@ -156,7 +156,7 @@ public abstract class AbstractRmiMojo
      * will not be recompiled until the source classes change.
      */
     @SuppressWarnings( "unused" )
-    @Parameter (defaultValue="0")
+    @Parameter( defaultValue = "0" )
     private int staleMillis;
 
     // ----------------------------------------------------------------------
@@ -347,7 +347,8 @@ public abstract class AbstractRmiMojo
             SourceInclusionScanner scanner = createScanner( source.getIncludes(), getExcludes( source ) );
             scanner.addSourceMapping( new SuffixMapping( ".class", "_Stub.class" ) );
             
-            Collection<File> staleRemoteClasses = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
+            Collection<File> staleRemoteClasses
+                    = scanner.getIncludedSources( getClassesDirectory(), getOutputDirectory() );
 
             for ( File file : staleRemoteClasses )
             {
@@ -382,7 +383,7 @@ public abstract class AbstractRmiMojo
 
     private SourceInclusionScanner createScanner( Set<String> includes, Set<String> excludes )
     {
-        return dependencies.createSourceInclusionScanner( staleMillis, includes, excludes );
+        return dependencies.createScanner( staleMillis, includes, excludes );
     }
 
     private Set<String> getExcludes( Source source )
@@ -431,7 +432,7 @@ public abstract class AbstractRmiMojo
 
     private Source getSource()
     {
-        if( source == null )
+        if ( source == null )
         {
             source = new Source();
         }
@@ -439,61 +440,109 @@ public abstract class AbstractRmiMojo
     }
     
     // Plexus trick: if there's a setter for a @parameter, use the setter
-    @SuppressWarnings("unused")
+
+    /**
+     * Specifies files to include in rmic processing
+     * @param includes a set of file name patterns
+     */
+    @SuppressWarnings( "unused" )
     public void setIncludes( Set<String> includes )
     {
         getSource().setIncludes( includes );
     }
 
+    /**
+     * Specifies files to exclude from rmic processing
+     * @param excludes a set of file name patterns
+     */
     public void setExcludes( Set<String> excludes )
     {
         getSource().setExcludes( excludes );
     }
 
+    /**
+     * Specifies a version to be passed to the compiler. Defaults to not passing one.
+     * @param version the version to pass
+     */
     public void setVersion( String version )
     {
         getSource().setVersion( version );
     }
 
+    /**
+     * Specifies whether the '-iiop' option will be passed to the compiler.
+     * @param iiop if true, will pass the option
+     */
     public void setIiop( Boolean iiop )
     {
         getSource().setIiop( iiop );
     }
 
+    /**
+     * Specifies whether the '-nolocalstubs' option will be passed to the compiler. Only applicable if the '-iiop'
+     * option is also set.
+     * @param noLocalStubs if true, will pass the option
+     */
     public void setNoLocalStubs( Boolean noLocalStubs )
     {
         getSource().setNoLocalStubs( noLocalStubs );
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Specifies whether the '-idl' option will be passed to the compiler.
+     * @param idl if true, will pass the option
+     */
+    @SuppressWarnings( "unused" )
     public void setIdl( Boolean idl )
     {
         getSource().setIdl( idl );
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Specifies whether the '-noValueMethods' option will be passed to the compiler. Only applicable if the '-idl'
+     * option is also set.
+     * @param noValueMethods if true, will pass the option
+     */
+    @SuppressWarnings( "unused" )
     public void setNoValueMethods( Boolean noValueMethods )
     {
         getSource().setNoValueMethods( noValueMethods );
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Specifies whether the '-keep' option will be passed to the compiler.
+     * @param keep if true, will pass the option
+     */
+    @SuppressWarnings( "unused" )
     public void setKeep( Boolean keep )
     {
         getSource().setKeep( keep );
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * Specifies whether the '-warn' option will be passed to the compiler.
+     * @param nowarn if true, will pass the option
+     */
+    @SuppressWarnings( "unused" )
     public void setNowarn( Boolean nowarn )
     {
         getSource().setNowarn( nowarn );
     }
 
+    /**
+     * Specifies whether the '-poa' option will be passed to the compiler. Only applicable if the '-iiop' option
+     * is also set.
+     * @param poa if true, will pass the option
+     */
     public void setPoa( Boolean poa )
     {
         getSource().setPoa( poa );
     }
 
+    /**
+     * Specifies whether the '-verbose' option will be passed to the compiler.
+     * @param verbose if true, will pass the option
+     */
     public void setVerbose( Boolean verbose )
     {
         getSource().setVerbose( verbose );
@@ -507,7 +556,7 @@ public abstract class AbstractRmiMojo
     {
         boolean fileExists( File includeFile );
 
-        SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set<String> includes, Set<String> excludes );
+        SourceInclusionScanner createScanner( int staleMillis, Set<String> includes, Set<String> excludes );
 
         Class<?> loadClass( String className ) throws ClassNotFoundException;
 
@@ -517,7 +566,7 @@ public abstract class AbstractRmiMojo
     /**
      * Standard file system and mojo dependencies.
      */
-    static class DependenciesFacadeImpl implements DependenciesFacade
+    private static class DependenciesFacadeImpl implements DependenciesFacade
     {
         private static URLClassLoader loader;
 
@@ -536,7 +585,7 @@ public abstract class AbstractRmiMojo
             return includeFile.exists();
         }
 
-        public SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set<String> includes, Set<String> excludes )
+        public SourceInclusionScanner createScanner( int staleMillis, Set<String> includes, Set<String> excludes )
         {
             return new StaleSourceScanner( staleMillis, includes, excludes );
         }

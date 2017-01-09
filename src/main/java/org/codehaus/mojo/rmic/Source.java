@@ -150,7 +150,7 @@ public class Source
 
     Set<String> getExcludes()
     {
-        return !isEmpty( excludes ) ? excludes :new HashSet<String>();
+        return !isEmpty( excludes ) ? excludes : new HashSet<String>();
     }
 
     private static boolean isEmpty( Collection collection )

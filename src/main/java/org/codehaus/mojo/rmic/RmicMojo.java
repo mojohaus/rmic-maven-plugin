@@ -22,13 +22,13 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.util.List;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
@@ -36,7 +36,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@Mojo( name = "rmic", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE )
+@Mojo( name = "rmic", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+       requiresDependencyResolution = ResolutionScope.COMPILE )
 public class RmicMojo
         extends AbstractRmiMojo
 {
@@ -45,13 +46,13 @@ public class RmicMojo
      * need to be included in the main project artifact, this parameter can be set
      * to ${project.build.outputDirectory}.
      */
-    @Parameter ( defaultValue="${project.build.directory}/rmi-classes" )
+    @Parameter( defaultValue = "${project.build.directory}/rmi-classes" )
     private File outputDirectory;
 
     /**
      * Directory tree where the compiled Remote classes are located.
      */
-    @Parameter ( defaultValue="${project.build.outputDirectory}" )
+    @Parameter( defaultValue = "${project.build.outputDirectory}" )
     private File classesDirectory;
 
     /**

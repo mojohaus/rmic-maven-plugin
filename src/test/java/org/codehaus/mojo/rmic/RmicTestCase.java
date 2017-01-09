@@ -439,8 +439,8 @@ public class RmicTestCase
             return false;
         }
 
-        public SourceInclusionScanner createSourceInclusionScanner( int staleMillis, Set<String> includes,
-                                                                    Set<String> excludes )
+        public SourceInclusionScanner createScanner( int staleMillis, Set<String> includes,
+                                                     Set<String> excludes )
         {
             return new TestScanner( includes, excludes );
         }

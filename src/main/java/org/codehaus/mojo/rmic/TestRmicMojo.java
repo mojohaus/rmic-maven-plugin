@@ -22,13 +22,13 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.util.List;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Compiles rmi stubs and skeleton classes from a remote implementation class.
@@ -37,7 +37,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author pgier
  * @version $Id$
  */
-@Mojo( name="test-rmic", defaultPhase=LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution=ResolutionScope.TEST )
+@Mojo( name = "test-rmic", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES,
+       requiresDependencyResolution = ResolutionScope.TEST )
 public class TestRmicMojo
     extends AbstractRmiMojo
 {

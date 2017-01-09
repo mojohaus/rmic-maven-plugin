@@ -1,7 +1,7 @@
 package org.codehaus.mojo.rmic;
 
 /*
- * Copyright (c) 2004-2017, Mojohaus.org
+ * Copyright (c) 2004-2017, Codehaus.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,11 +22,11 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.compiler.CompilerException;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.codehaus.plexus.compiler.CompilerException;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -42,8 +42,8 @@ class BuiltInRmiCompiler extends AbstractRmiCompiler
     private static final String RMIC_CLASSNAME = "sun.rmi.rmic.Main";
 
     private static final String USE_GLASSFISH_RMIC =
-                                    " Built-in RMIC compiler not available in JDK9." +
-                                    " Add a dependency on org.glassfish.corba:rmic to the plugin.";
+                                    " Built-in RMIC compiler not available in JDK9."
+                                  + " Add a dependency on org.glassfish.corba:rmic to the plugin.";
 
     @Override
     protected Class<?> createMainClass()
@@ -55,6 +55,7 @@ class BuiltInRmiCompiler extends AbstractRmiCompiler
         }
         catch ( ClassNotFoundException ignored )
         {
+            // ignore
         }
 
         try
@@ -113,7 +114,7 @@ class BuiltInRmiCompiler extends AbstractRmiCompiler
         }
         catch ( MalformedURLException e )
         {
-            throw new CompilerException( "Could not convert the file reference to tools.jar to a URL, path to tools.jar: '"
+            throw new CompilerException( "Could not convert the file reference to tools.jar to a URL path to the jar: '"
                                              + toolsJar.getAbsolutePath() + "'.", e );
         }
     }

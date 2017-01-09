@@ -1,6 +1,8 @@
 package org.codehaus.mojo.rmic;
 
 /*
+ * Copyright (c) 2005-2017, Codehaus.org
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
@@ -20,6 +22,10 @@ package org.codehaus.mojo.rmic;
  * SOFTWARE.
  */
 
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.compiler.CompilerException;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.io.File;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -29,10 +35,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.compiler.CompilerException;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * A base class for invocation of rmi compilers whose arguments match those required by the JDK version of rmic.
@@ -214,7 +216,8 @@ abstract class AbstractRmiCompiler implements RmiCompiler
 
             compile.invoke( main, new Object[] { args } );
         }
-        catch ( NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException e )
+        catch ( NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+                | InstantiationException | InvocationTargetException e )
         {
             throw new CompilerException( "Error while executing the compiler.", e );
         }

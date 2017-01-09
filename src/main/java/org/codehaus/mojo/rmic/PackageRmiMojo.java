@@ -42,21 +42,21 @@ import java.io.IOException;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-@Mojo( name="package", defaultPhase=LifecyclePhase.PACKAGE )
+@Mojo( name = "package", defaultPhase = LifecyclePhase.PACKAGE )
 public class PackageRmiMojo
     extends AbstractMojo
 {
     /**
      * The directory to which the generated jar should be written.
      */
-    @Parameter ( defaultValue="${project.build.directory}" )
+    @Parameter( defaultValue = "${project.build.directory}" )
     private File target;
 
     /**
      * The base name of the generated jar.  This name does not include
      * the classifier or the extension.
      */
-    @Parameter ( defaultValue="${project.build.finalName}" )
+    @Parameter( defaultValue = "${project.build.finalName}" )
     private String finalName;
 
     @Parameter( defaultValue = "${project}", readonly = true )
@@ -65,7 +65,7 @@ public class PackageRmiMojo
     /**
      * Classifier to append to the jar.
      */
-    @Parameter ( defaultValue="client" )
+    @Parameter( defaultValue = "client" )
     private String classifier;
 
     /**
